@@ -1,0 +1,1 @@
+export {apiSsoInstance} from './baseSso';
