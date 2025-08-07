@@ -1,10 +1,10 @@
 import {Link, useRouteError} from 'react-router-dom';
-import type {RejectedRegisterType, RejectedSignInType} from '@shared/types';
+import type {RejectedSsoType} from '@shared/types';
 
 export const Fallback = () => {
   const error = useRouteError();
   console.log(error);
-  const knownError = error as RejectedSignInType | RejectedRegisterType | TypeError;
+  const knownError = error as RejectedSsoType;
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center">
@@ -13,10 +13,10 @@ export const Fallback = () => {
           Something went wrong
         </h1>
         <span className="text-lg text-gray-700 mb-6">
-          {knownError?.message}
+          {knownError?.error}
         </span>
         <Link
-          to="/"
+          to="/auth"
           className="px-6 py-2 bg-black text-white rounded hover:shadow-gray-700 hover:shadow-lg/30 dark:bg-white dark:text-gray-700 transition"
         >
           Go to home page
