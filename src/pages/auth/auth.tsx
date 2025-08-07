@@ -6,7 +6,7 @@ import {useForm} from "react-hook-form"
 import type {LoginOtp, OtpForm, PhoneForm} from "@shared/types"
 import {otpFormSchema, phoneFormSchema} from "@shared/types"
 import {useAppDispatch} from "@shared/lib"
-import {checkCode, sendCode} from "@entities/user"
+import {checkCode, getUser, sendCode} from "@entities/user"
 import { toast } from "sonner"
 import {AlertCircleIcon} from "lucide-react";
 import {Toaster} from "@shared/ui/sonner";
@@ -16,6 +16,7 @@ export const AuthPage = () => {
   const [stage, setStage] = useState<"phone" | "otp">("phone")
   const [phone, setPhone] = useState<string>("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showForm, setShowForm] = useState(true)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
@@ -31,12 +32,13 @@ export const AuthPage = () => {
 
   const inputPhoneRef = useMask({
     mask: "+7 (___) ___-__-__",
-    replacement: { _: /\d/ },
+    replacement: { _: /\d/ }
   })
 
   const handlePhoneSubmit = async (data: PhoneForm) => {
     setIsSubmitting(true)
     try {
+      data.phone = "+" + data.phone
       const result = await dispatch(sendCode(data))
       if (sendCode.rejected.match(result)) {
         toast.error("Ошибка при отправке телефона", {
@@ -75,7 +77,9 @@ export const AuthPage = () => {
         return;
       }
       if (checkCode.fulfilled.match(result)) {
-        navigate("/home");
+        setShowForm(false);
+        await dispatch(getUser())
+        navigate("/home")
       }
     } finally {
       setIsSubmitting(false)
@@ -91,7 +95,7 @@ export const AuthPage = () => {
   return (
     <div className="w-full max-w-sm px-4">
       <Toaster position="top-center" richColors />
-      <LoginForm
+      {showForm ? <LoginForm
         stage={stage}
         phoneForm={phoneForm}
         otpForm={otpForm}
@@ -100,7 +104,7 @@ export const AuthPage = () => {
         isSubmitting={isSubmitting}
         onResetPhone={resetToPhone}
         phoneInputRef={inputPhoneRef}
-      />
+      /> : null}
     </div>
   )
 }

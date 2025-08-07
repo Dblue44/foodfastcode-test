@@ -3,16 +3,27 @@ import {z} from "zod";
 export const userStateSchema = z.object({
   id: z.string().nullable(),
   name: z.string().nullable(),
-  email: z.string().nullable(),
-  type: z.string().nullable(),
+  phone: z.string().nullable(),
+  username: z.string().nullable(),
+  telegramId: z.string().nullable(),
+  createdAt: z.string().nullable(),
+  updatedAt: z.string().nullable(),
+  avatarUrl: z.string().nullable(),
 })
 
 export type UserState = z.infer<typeof userStateSchema>
 
+export const userStateResponseSchema = z.object({
+  data: userStateSchema
+})
+
+export type UserStateResponse = z.infer<typeof userStateResponseSchema>
+
 export const iUserStateSchema = userStateSchema.extend({
   accessToken: z.string().nullable(),
-  isLoading: z.boolean(),
-  error: z.string().optional().nullable()
+  error: z.string().optional().nullable(),
+  authClosed: z.boolean(),
+  currentPage: z.string(),
 })
 
 export type IUserState = z.infer<typeof iUserStateSchema>
@@ -54,8 +65,9 @@ export const userAccessCodeData = z.object({
 
 export type UserAccessCodeData = z.infer<typeof userAccessCodeData>
 
-export const rejectedSignInTypeSchema = z.object({
+export const rejectedSsoTypeSchema = z.object({
   error: z.string(),
+  isAuthError: z.boolean().optional(),
 })
 
-export type RejectedSignInType = z.infer<typeof rejectedSignInTypeSchema>
+export type RejectedSsoType = z.infer<typeof rejectedSsoTypeSchema>

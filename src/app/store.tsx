@@ -11,15 +11,17 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import {userReducer} from "@entities/user";
+import {placesReducer} from "@entities/places";
 
 const rootReducer = combineReducers({
-  user: userReducer
+  user: userReducer,
+  places: placesReducer
 })
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['image'],
+  whitelist: ['user', 'places'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

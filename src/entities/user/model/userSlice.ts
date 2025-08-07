@@ -1,15 +1,20 @@
-import {createSlice, isPending, isRejected} from "@reduxjs/toolkit";
+import {createSlice, isPending, isRejected, type PayloadAction} from "@reduxjs/toolkit";
 import type {IUserState} from "@shared/types";
-import {sendCode, checkCode} from "@entities/user";
+import {sendCode, checkCode, getUser} from "@entities/user";
 
 const initialState: IUserState = {
   id: null,
   name: null,
-  email: null,
-  error: null,
+  phone: null,
+  username: null,
+  telegramId: null,
+  createdAt: null,
+  updatedAt: null,
+  avatarUrl: null,
   accessToken: null,
-  isLoading: false,
-  type: null
+  authClosed: false,
+  error: null,
+  currentPage: "Главная"
 }
 
 const userSlice = createSlice({
@@ -17,21 +22,43 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      state.id = ""
-      state.name = ""
-      state.email = ""
-      state.isLoading = false
-    }
+      state.id = null
+      state.name = null
+      state.phone = null
+      state.username = null
+      state.telegramId = null
+      state.createdAt = null
+      state.updatedAt = null
+      state.avatarUrl = null
+      state.accessToken = null
+      state.authClosed = false
+      state.error = null
+    },
+    setPageName: (state, action: PayloadAction<string>) => {
+      state.currentPage = action.payload
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(checkCode.fulfilled, (state, action) => {
-      state.accessToken = action.payload?.data.access_token
-      state.isLoading = false
-    })
+    builder
+      .addCase(checkCode.fulfilled, (state, action) => {
+        state.accessToken = action.payload?.data.access_token
+      })
+      .addCase(getUser.fulfilled, (state, action) => {
+        const data = action.payload.data
+        state.id = data.id
+        state.name = data.name
+        state.phone = data.phone
+        state.username = data.username
+        state.telegramId = data.telegramId
+        state.createdAt = data.createdAt
+        state.updatedAt = data.updatedAt
+        state.avatarUrl = data.avatarUrl
+        state.authClosed = true
+      })
     builder.addMatcher(
       isPending(sendCode, checkCode),
       state => {
-        state.isLoading = true
+        state.authClosed = false
       }
     )
     builder.addMatcher(
@@ -39,13 +66,19 @@ const userSlice = createSlice({
       (state, action) => {
         state.id = null
         state.name = null
-        state.email = null
-        state.isLoading = false
+        state.phone = null
+        state.username = null
+        state.telegramId = null
+        state.createdAt = null
+        state.updatedAt = null
+        state.avatarUrl = null
+        state.accessToken = null
+        state.authClosed = false
         state.error = action.payload?.error
       }
     )
   }
 })
 
-export const {logout} = userSlice.actions
+export const {logout, setPageName} = userSlice.actions
 export default userSlice.reducer

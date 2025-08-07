@@ -1,1 +1,1 @@
-export {AdminSidebar} from './adminSidebar.tsx'
+export {AdminSidebar} from './adminSidebar'

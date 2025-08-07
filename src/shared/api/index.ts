@@ -1,1 +1,1 @@
-export {apiSsoInstance} from './baseSso';
+export {apiSsoInstance, apiBaseInstance} from './base';

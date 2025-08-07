@@ -1,6 +1,7 @@
 export {
   default as userReducer,
-  logout
+  logout,
+  setPageName
 } from './model/userSlice'
-export {sendCode, checkCode} from './model/userThunk'
-export {selectUserType, selectAccessToken, selectIsLoading} from './model/selector'
+export {sendCode, checkCode, getUser} from './model/userThunk'
+export {selectUserBase, selectAccessToken} from './model/selector'

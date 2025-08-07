@@ -1,26 +1,27 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import type {
-  ErrorType,
-  RejectedSignInType,
+  RejectedSsoType,
   PhoneForm,
   LoginOtp,
   UserSendCodeData,
-  UserAccessCodeData
+  UserAccessCodeData,
+  ErrorLineType, UserStateResponse
 } from "@shared/types";
-import {sendCodeSync, checkCodeSync, refreshTokenSync} from "@shared/api/user";
+import {sendCodeRequest, checkCodeRequest, getUserRequest } from "@shared/api/user";
 
 
 export const sendCode = createAsyncThunk<
   UserSendCodeData,
   PhoneForm,
-  { readonly rejectValue: RejectedSignInType }
-> ("user/sendCode", async (data: PhoneForm, thunkAPI) => {
+  { readonly rejectValue: RejectedSsoType }
+>("user/sendCode", async (data: PhoneForm, thunkAPI) => {
   try {
-    return await sendCodeSync(data)
+    return await sendCodeRequest(data)
   } catch (err) {
-    const axiosError = err as ErrorType
+    const knownError = err as ErrorLineType
     return thunkAPI.rejectWithValue({
-      error: axiosError.response?.data?.error || axiosError.message || "Unknown error occurred",
+      error: knownError.error || knownError.response || knownError.message || "Unknown error occurred",
+      isAuthError: knownError.isAuthError
     })
   }
 })
@@ -28,29 +29,31 @@ export const sendCode = createAsyncThunk<
 export const checkCode = createAsyncThunk<
   UserAccessCodeData,
   LoginOtp,
-  { readonly rejectValue: RejectedSignInType }
+  { readonly rejectValue: RejectedSsoType }
 >("user/checkCode", async (data: LoginOtp, thunkAPI) => {
   try {
-    return await checkCodeSync(data)
+    return await checkCodeRequest(data)
   } catch (err) {
-    const axiosError = err as ErrorType
+    const knownError = err as ErrorLineType
     return thunkAPI.rejectWithValue({
-      error: axiosError.response?.data?.error || axiosError.message || "Unknown error occurred",
+      error: knownError.error || knownError.response || knownError.message || "Unknown error occurred",
+      isAuthError: knownError.isAuthError
     })
   }
 })
 
-export const refreshToken = createAsyncThunk<
-  UserAccessCodeData,
-  string,
-  { readonly rejectValue: RejectedSignInType }
->("user/refreshToken", async (accessToken, thunkAPI) => {
+export const getUser = createAsyncThunk<
+  UserStateResponse,
+  void,
+  { readonly rejectValue: RejectedSsoType }
+>("user/getUser", async (_, thunkAPI) => {
   try {
-    return await refreshTokenSync(accessToken)
+    return await getUserRequest()
   } catch (err) {
-    const knownError = err as ErrorType
+    const knownError = err as ErrorLineType
     return thunkAPI.rejectWithValue({
-      error: knownError.message,
+      error: knownError.error || knownError.response || knownError.message || "Unknown error occurred",
+      isAuthError: knownError.isAuthError
     })
   }
 })

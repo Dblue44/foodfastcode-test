@@ -1,32 +1,47 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
 } from 'react-router-dom'
 import {Fallback} from "@shared/ui/fallback";
-import {Layout} from "@app/layout";
+import {AppLayout, AuthLayout} from "@app/layout";
 import {AuthPage} from "@pages/auth";
 import {HomePage} from "@pages/home";
 import {ProtectedRoute} from "@app/routes";
+import {PlacesPage, CreatePlacePage} from "@pages/places";
+import {NotFoundPage} from "@pages/notFound";
+import {Suspense} from "react";
 
 export const AppRouter = () => {
 
   const routers = createRoutesFromElements(
-    <Route
-      path='/'
-      element={<Layout />}
-      errorElement={<Fallback />}>
-      <Route path='auth' element={<AuthPage />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path='home' index element={<HomePage />} />
+    <>
+      <Route
+        path="/"
+        element={<Navigate to="/auth" replace />}
+      />
+      <Route element={<AuthLayout />} >
+        <Route path="/auth" element={<AuthPage />} />
       </Route>
-    </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AppLayout />}>
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/places" element={<PlacesPage />} />
+          <Route path="/create-place" element={<CreatePlacePage />} />
+        </Route>
+      </Route>
+      <Route path="*" element={<NotFoundPage />} />
+    </>
+
   )
 
   const router = createBrowserRouter(routers, {})
 
   return (
-    <RouterProvider router={router}/>
+    <Suspense fallback={<Fallback />}>
+      <RouterProvider router={router} />
+    </Suspense>
   )
 }
