@@ -82,7 +82,12 @@ export const PlacesList = ({
   }
 
   return (
-    <div className="!w-[1440px]">
+    <div className="max-w-[1440px] w-full p-4">
+      {isMobile && (
+        <div className="mb-2">
+          <CreatePlaceButton />
+        </div>
+      )}
       <div className="w-full flex items-center py-2 mb-2">
         <Input
           placeholder="Поиск по названию"
@@ -115,9 +120,11 @@ export const PlacesList = ({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="ml-4">
-          <CreatePlaceButton />
-        </div>
+        {!isMobile && (
+          <div className="ml-4">
+            <CreatePlaceButton />
+          </div>
+        )}
       </div>
       <div className="overflow-hidden rounded-lg border">
         <Table>
