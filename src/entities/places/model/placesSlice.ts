@@ -17,6 +17,9 @@ const placesSlice = createSlice({
     },
     resetAuthError: (state) => {
       state.isAuthError = false
+    },
+    clearPlaces: (state) => {
+      state.placesList = []
     }
   },
   extraReducers: (builder) => {
@@ -26,7 +29,7 @@ const placesSlice = createSlice({
       })
       .addCase(getUserPlaces.fulfilled, (state, action) => {
         if (action.payload.data) {
-          state.placesList = state.placesList ? [...state.placesList, ...action.payload.data] : action.payload.data
+          state.placesList = action.payload.data
         }
         state.loadingPlaces = false
       })
@@ -37,5 +40,5 @@ const placesSlice = createSlice({
   }
 })
 
-export const {setPlaceCategories, resetAuthError} = placesSlice.actions
+export const {setPlaceCategories, resetAuthError, clearPlaces} = placesSlice.actions
 export default placesSlice.reducer

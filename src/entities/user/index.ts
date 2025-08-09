@@ -4,4 +4,4 @@ export {
   setPageName
 } from './model/userSlice'
 export {sendCode, checkCode, getUser} from './model/userThunk'
-export {selectUserBase, selectAccessToken} from './model/selector'
+export {selectUserBase, selectPageName, selectAccessToken} from './model/selector'

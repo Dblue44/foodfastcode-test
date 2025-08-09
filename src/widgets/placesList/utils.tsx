@@ -66,6 +66,7 @@ export const utils: ColumnDef<IBasePlace>[] = [
     },
     cell: ({row}) => {
       const status = row.original.status
+      if (!status) return null
       const iconMap: Record<string, React.ReactNode> = {
         "Работает": <CheckCircle2Icon className="text-green-500 dark:text-green-400 size-4" />,
         "Приостановлено": <Clock className="text-blue-500 size-4" />,
@@ -87,8 +88,8 @@ export const utils: ColumnDef<IBasePlace>[] = [
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            variant="destructive"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+            variant="default"
+            className="data-[state=open]:bg-muted text-muted-foreground flex size-8 ml-auto mr-4"
             size="icon"
           >
             <EllipsisVertical />

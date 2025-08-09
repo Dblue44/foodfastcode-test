@@ -4,12 +4,11 @@ import { Badge } from "@shared/ui/badge"
 import { Separator } from "@shared/ui/separator"
 import { resolveCrumbs } from "@shared/config/breadcrumbs"
 import { useAppSelector } from "@shared/lib"
-import { selectUserBase } from "@entities/user"
+import {selectPageName} from "@entities/user"
 
 export function Breadcrumbs() {
   const { pathname } = useLocation()
-  const user = useAppSelector(selectUserBase)
-  const pageName = user?.pageName ?? undefined
+  const pageName = useAppSelector(selectPageName)
 
   const crumbs = useMemo(() => resolveCrumbs(pathname, pageName), [pathname, pageName])
 

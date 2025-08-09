@@ -1,1 +1,1 @@
-export {getPlaces} from './places'
+export {getPlaces, createPlace} from './places'

@@ -6,6 +6,11 @@ export const selectUserBase = createSelector(
   (state) => state.user
 )
 
+export const selectPageName = createSelector(
+  selectUserBase,
+  (state: IUserState) => state.currentPage
+)
+
 export const selectAccessToken = createSelector(
   selectUserBase,
   (state: IUserState) => state.accessToken

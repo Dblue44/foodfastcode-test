@@ -14,7 +14,7 @@ export const BREADCRUMBS: BreadcrumbsMap = {
 
   "/create-place": ({ pageName }) => [
     { label: "Заведения", to: "/places" },
-    { label: pageName ?? "Добавить новое заведение", to: "/create-place" },
+    { label: pageName ?? "Добавление заведения", to: "/create-place" },
   ],
 }
 

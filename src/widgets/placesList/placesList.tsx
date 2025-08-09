@@ -23,7 +23,6 @@ import {utils, type PlacesListProps, placeStatuses} from "@widgets/placesList";
 import {useIsMobile} from "@shared/hooks/use-mobile.ts";
 import {CreatePlaceButton} from "@shared/ui/createPlaceButton/createPlaceButton.tsx";
 
-
 export const PlacesList = ({
   data
 }: PlacesListProps) => {
@@ -127,7 +126,7 @@ export const PlacesList = ({
         )}
       </div>
       <div className="overflow-hidden rounded-lg border">
-        <Table>
+        <Table className="table-fixed">
           <TableHeader className="sticky top-0 z-10 bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

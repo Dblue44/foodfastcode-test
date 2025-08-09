@@ -16,6 +16,17 @@ const makeError = (msg: string, resp: string, authError = false): ErrorLineType 
   return errorLineTypeSchema.parse(errObj)
 }
 
+let isRefreshing = false
+let refreshPromise: Promise<string> | null = null
+const refreshSubscribers: Array<(token: string | null) => void> = []
+
+const subscribeTokenRefresh = (cb: (t: string | null) => void) => refreshSubscribers.push(cb)
+const onTokenRefreshed = (token: string | null) => {
+  refreshSubscribers.splice(0).forEach((cb) => cb(token))
+}
+
+const rawSso = axios.create({ baseURL: API_AUTH_URL, withCredentials: true })
+
 function applyAuthRequestInterceptor(instance: AxiosInstance) {
   instance.interceptors.request.use(
     config => {
@@ -49,26 +60,64 @@ function applySsoResponseInterceptor(instance: AxiosInstance) {
       const status = error.response?.status
       const original = error.config
       const accessToken = localStorage.getItem('access_token')
-      if ((status === 401 || status === 403) && !original._retry && accessToken) {
-        original._retry = true
-        try {
-          const refreshResponse: AxiosResponse<UserAccessCodeData> = await apiSsoInstance.postRefreshToken(
-            'refresh-token',
-            { withCredentials: true }
-          )
-          const newAccess = refreshResponse.data.data.access_token
-          if (newAccess) {
-            localStorage.setItem('access_token', newAccess)
-            original.headers['Authorization'] = `Bearer ${newAccess}`
-            return instance.request(original)
-          }
-        } catch (refreshError) {
-          const knowRefreshError = refreshError as ErrorLineType
-          knowRefreshError.isAuthError = true
-          return Promise.reject(knowRefreshError)
-        }
+      const url = original?.url ?? ""
+
+      if (url.endsWith("refresh-token")) {
+        return Promise.reject(makeError(error.message, error.response?.data?.error, true))
       }
-      return Promise.reject(makeError(error.message, error.response?.data.error, true))
+
+      if ((status === 401 || status === 403)) {
+        if (!accessToken) {
+          return Promise.reject(makeError(error.message, error.response?.data?.error, true))
+        }
+        if (original?._retry) {
+          return Promise.reject(makeError(error.message, error.response?.data?.error, true))
+        }
+        if (isRefreshing && refreshPromise) {
+          return new Promise((resolve, reject) => {
+            subscribeTokenRefresh((newToken) => {
+              if (!original) return reject(error)
+              if (!newToken) return reject(makeError(error.message, error?.response?.data?.error, true))
+              original._retry = true
+              original.headers = { ...(original.headers ?? {}), Authorization: `Bearer ${newToken}` }
+              resolve(instance.request(original))
+            })
+          })
+        }
+
+        isRefreshing = true
+        original!._retry = true
+
+        refreshPromise = rawSso
+          .post<AxiosResponse<UserAccessCodeData>>("refresh-token", null, { withCredentials: true })
+          .then((resp) => {
+            const newAccess = (resp?.data?.data?.data?.access_token ?? resp?.data?.data?.data?.access_token) as string | undefined
+            if (!newAccess) throw new Error("No access token in refresh response")
+            localStorage.setItem("access_token", newAccess)
+            onTokenRefreshed(newAccess)
+            return newAccess
+          })
+          .catch((refreshErr) => {
+            onTokenRefreshed(null)
+            throw makeError(
+              refreshErr?.message ?? "Refresh failed",
+              refreshErr?.response?.data?.error,
+              true
+            )
+          })
+          .finally(() => {
+            isRefreshing = false
+            refreshPromise = null
+          })
+
+        const newToken = await refreshPromise
+
+        if (!original) return Promise.reject(error)
+        original.headers = { ...(original.headers ?? {}), Authorization: `Bearer ${newToken}` }
+        return instance.request(original)
+      }
+
+      return Promise.reject(makeError(error.message, error?.response?.data?.error))
     }
   )
 }
@@ -118,21 +167,6 @@ export class ApiSsoInstance {
     }
     return response.data
   }
-
-  async postRefreshToken<T>(
-    endpoint: string,
-    options: AxiosRequestConfig = {}
-  ): Promise<T> {
-    const response: AxiosResponse<T> = await this.axios.post(
-      endpoint,
-      null,
-      options
-    )
-    if (axios.isAxiosError(response)) {
-      return Promise.reject(response)
-    }
-    return response.data
-  }
 }
 
 export const apiSsoInstance = new ApiSsoInstance()
@@ -159,6 +193,22 @@ export class ApiBaseInstance {
   ): Promise<T> {
     const response: AxiosResponse<T> = await this.axios.get(
       endpoint,
+      options
+    )
+    if (axios.isAxiosError(response)) {
+      return Promise.reject(response)
+    }
+    return response.data
+  }
+
+  async post<T>(
+    endpoint: string,
+    formData: FormData,
+    options: AxiosRequestConfig = {}
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axios.post(
+      endpoint,
+      formData,
       options
     )
     if (axios.isAxiosError(response)) {

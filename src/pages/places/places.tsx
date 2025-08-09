@@ -1,6 +1,6 @@
 import {PlacesList, PlacesListSkeleton} from "@widgets/placesList";
 import {useAppDispatch, useAppSelector} from "@shared/lib";
-import {getUserPlaces, selectPlacesBase} from "@entities/places";
+import {getUserPlaces, clearPlaces, selectPlacesBase} from "@entities/places";
 import {useEffect} from "react";
 import {setPageName} from "@entities/user";
 import type {IPlacesState} from "@shared/types";
@@ -12,6 +12,7 @@ export function PlacesPage() {
 
   useEffect(() => {
     dispatch(setPageName("Заведения"));
+    dispatch(clearPlaces());
     dispatch(getUserPlaces());
   }, [dispatch])
 

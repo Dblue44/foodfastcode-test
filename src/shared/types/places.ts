@@ -1,10 +1,20 @@
 import {z} from "zod";
 
+export const createPlaceSchema = z.object({
+  name: z.string().min(1, "Введите название"),
+  address: z.string().min(1, "Введите адрес"),
+  token: z.string()
+    .min(1, "Введите токен бота")
+    .transform((val) => val.trim())
+})
+
+export type CreatePlaceForm = z.infer<typeof createPlaceSchema>
+
 export const basePlaceSchema = z.object({
   id: z.string(),
   name: z.string(),
   address: z.string(),
-  status: z.string().default("Работает")
+  status: z.string().default("Работает"),
 })
 
 export type IBasePlace = z.infer<typeof basePlaceSchema>
