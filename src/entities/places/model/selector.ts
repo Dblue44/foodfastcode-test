@@ -11,3 +11,8 @@ export const selectPlacesList = createSelector(
   selectPlacesBase,
   (state: IPlacesState) => state.placesList ?? []
 )
+
+export const selectAuthError = createSelector(
+  selectPlacesBase,
+  (state: IPlacesState) => state.isAuthError
+)

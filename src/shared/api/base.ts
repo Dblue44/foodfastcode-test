@@ -48,27 +48,24 @@ function applySsoResponseInterceptor(instance: AxiosInstance) {
     async (error) => {
       const status = error.response?.status
       const original = error.config
-      if (status === 401 && !original._retry) {
+      const accessToken = localStorage.getItem('access_token')
+      if ((status === 401 || status === 403) && !original._retry && accessToken) {
         original._retry = true
-        const refreshToken = localStorage.getItem('refresh_token')
-        if (refreshToken) {
-          try {
-            const refreshResponse: AxiosResponse<UserAccessCodeData> = await instance.post(
-              'refresh-token',
-              null,
-              { withCredentials: true }
-            )
-            const newAccess = refreshResponse.data.data.access_token
-            if (newAccess) {
-              localStorage.setItem('access_token', newAccess)
-              original.headers['Authorization'] = `Bearer ${newAccess}`
-              return instance.request(original)
-            }
-          } catch (refreshError) {
-            const knowRefreshError = refreshError as ErrorLineType
-            knowRefreshError.isAuthError = true
-            return Promise.reject(knowRefreshError)
+        try {
+          const refreshResponse: AxiosResponse<UserAccessCodeData> = await apiSsoInstance.postRefreshToken(
+            'refresh-token',
+            { withCredentials: true }
+          )
+          const newAccess = refreshResponse.data.data.access_token
+          if (newAccess) {
+            localStorage.setItem('access_token', newAccess)
+            original.headers['Authorization'] = `Bearer ${newAccess}`
+            return instance.request(original)
           }
+        } catch (refreshError) {
+          const knowRefreshError = refreshError as ErrorLineType
+          knowRefreshError.isAuthError = true
+          return Promise.reject(knowRefreshError)
         }
       }
       return Promise.reject(makeError(error.message, error.response?.data.error, true))
@@ -114,6 +111,21 @@ export class ApiSsoInstance {
     const response: AxiosResponse<T> = await this.axios.post(
       endpoint,
       formData,
+      options
+    )
+    if (axios.isAxiosError(response)) {
+      return Promise.reject(response)
+    }
+    return response.data
+  }
+
+  async postRefreshToken<T>(
+    endpoint: string,
+    options: AxiosRequestConfig = {}
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axios.post(
+      endpoint,
+      null,
       options
     )
     if (axios.isAxiosError(response)) {

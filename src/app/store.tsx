@@ -12,6 +12,7 @@ import {
 import storage from 'redux-persist/lib/storage'
 import {userReducer} from "@entities/user";
 import {placesReducer} from "@entities/places";
+import {authErrorListener} from "@app/middlewares";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -40,7 +41,7 @@ const store = configureStore({
           REGISTER,
         ],
       },
-    }),
+    }).concat(authErrorListener.middleware),
 })
 
 export const persistor = persistStore(store)
