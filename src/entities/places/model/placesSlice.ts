@@ -20,7 +20,7 @@ const placesSlice = createSlice({
     },
     clearPlaces: (state) => {
       state.placesList = []
-    }
+    },
   },
   extraReducers: (builder) => {
     builder

@@ -91,7 +91,7 @@ function applySsoResponseInterceptor(instance: AxiosInstance) {
         refreshPromise = rawSso
           .post<AxiosResponse<UserAccessCodeData>>("refresh-token", null, { withCredentials: true })
           .then((resp) => {
-            const newAccess = (resp?.data?.data?.data?.access_token ?? resp?.data?.data?.data?.access_token) as string | undefined
+            const newAccess = (resp?.data?.data?.data?.access_token ?? resp?.data?.data?.data?.access_token) as string | undefined // TODO ПЕДЕЛАТЬ ОТВЕТ С БЭКА
             if (!newAccess) throw new Error("No access token in refresh response")
             localStorage.setItem("access_token", newAccess)
             onTokenRefreshed(newAccess)
@@ -209,6 +209,36 @@ export class ApiBaseInstance {
     const response: AxiosResponse<T> = await this.axios.post(
       endpoint,
       formData,
+      options
+    )
+    if (axios.isAxiosError(response)) {
+      return Promise.reject(response)
+    }
+    return response.data
+  }
+
+  async put<T>(
+    endpoint: string,
+    formData: FormData,
+    options: AxiosRequestConfig = {}
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axios.put(
+      endpoint,
+      formData,
+      options
+    )
+    if (axios.isAxiosError(response)) {
+      return Promise.reject(response)
+    }
+    return response.data
+  }
+
+  async delete<T>(
+    endpoint: string,
+    options: AxiosRequestConfig = {}
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axios.delete(
+      endpoint,
       options
     )
     if (axios.isAxiosError(response)) {

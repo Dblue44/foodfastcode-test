@@ -4,5 +4,5 @@ export {
   resetAuthError,
   clearPlaces
 } from './model/placesSlice'
-export {getUserPlaces, createUserPlace} from './model/placesThunk'
+export {getUserPlaces, createUserPlace, removeUserPlace, updateUserPlace} from './model/placesThunk'
 export {selectPlacesBase, selectPlacesList} from './model/selector'

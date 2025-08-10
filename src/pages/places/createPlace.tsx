@@ -4,7 +4,7 @@ import {useAppDispatch} from "@shared/lib";
 import {useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {type CreatePlaceForm, createPlaceSchema} from "@shared/types";
+import {type IPlace, storePlaceSchema} from "@shared/types";
 import {toast} from "sonner";
 import {createUserPlace} from "@entities/places";
 import {AlertCircleIcon} from "lucide-react";
@@ -19,15 +19,15 @@ export function CreatePlacePage() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  const form = useForm<CreatePlaceForm>({
-    resolver: zodResolver(createPlaceSchema),
+  const form = useForm<IPlace>({
+    resolver: zodResolver(storePlaceSchema),
     defaultValues: { name: "", address: "", token: "" },
     mode: "onSubmit",
   })
 
   const isSubmitting = form.formState.isSubmitting
 
-  const onSubmit = async (values: CreatePlaceForm) => {
+  const onSubmit = async (values: IPlace) => {
     const result = await dispatch(createUserPlace(values))
     if (createUserPlace.fulfilled?.match?.(result)) {
       navigate("/places", { replace: true })

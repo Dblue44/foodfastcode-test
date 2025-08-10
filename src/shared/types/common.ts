@@ -3,7 +3,7 @@ import { z } from "zod"
 /** Схема и тип одной крошки */
 export const crumbSchema = z.object({
   label: z.string().min(1, "label is required"),
-  to: z.string().regex(/^\/.*/, "to must start with '/'"),
+  to: z.string().regex(/^\/.*/, "to must start with '/'").nullable(),
 })
 export type Crumb = z.infer<typeof crumbSchema>
 

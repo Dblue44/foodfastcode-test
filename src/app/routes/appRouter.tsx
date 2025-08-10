@@ -13,6 +13,7 @@ import {ProtectedRoute} from "@app/routes";
 import {PlacesPage, CreatePlacePage} from "@pages/places";
 import {NotFoundPage} from "@pages/notFound";
 import {Suspense} from "react";
+import {EditPlacePage} from "@pages/places/editPlace.tsx";
 
 export const AppRouter = () => {
 
@@ -30,6 +31,7 @@ export const AppRouter = () => {
           <Route path="/home" element={<HomePage />} />
           <Route path="/places" element={<PlacesPage />} />
           <Route path="/create-place" element={<CreatePlacePage />} />
+          <Route path='place/:id' element={<EditPlacePage />} />
         </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />

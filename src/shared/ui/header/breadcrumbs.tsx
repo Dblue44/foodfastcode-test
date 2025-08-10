@@ -2,15 +2,17 @@ import { useLocation, Link } from "react-router-dom"
 import { useMemo } from "react"
 import { Badge } from "@shared/ui/badge"
 import { Separator } from "@shared/ui/separator"
-import { resolveCrumbs } from "@shared/config/breadcrumbs"
+import { resolveCrumbs } from "@shared/config"
 import { useAppSelector } from "@shared/lib"
 import {selectPageName} from "@entities/user"
+import {selectPlacesList} from "@entities/places";
 
 export function Breadcrumbs() {
   const { pathname } = useLocation()
   const pageName = useAppSelector(selectPageName)
+  const placesList = useAppSelector(selectPlacesList)
 
-  const crumbs = useMemo(() => resolveCrumbs(pathname, pageName), [pathname, pageName])
+  const crumbs = useMemo(() => resolveCrumbs(pathname, placesList, pageName), [pathname, placesList, pageName])
 
   if (!crumbs.length) return null
 
@@ -31,7 +33,7 @@ export function Breadcrumbs() {
               </Badge>
             ) : (
               <Badge asChild className="cursor-pointer hover:underline text-sm">
-                <Link to={c.to}>{c.label}</Link>
+                {c.to ? <Link to={c.to}>{c.label}</Link> : c.label}
               </Badge>
             )}
 

@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from "@shared/ui/sidebar";
-import {Airplay, Gauge, MapPinHouse, SquareMenu} from 'lucide-react';
+import {Gauge, MapPinHouse, SquareMenu} from 'lucide-react';
 import {Link} from "react-router-dom";
 import {NavUser} from "@widgets/navUser";
 import {Search} from "@widgets/search";
@@ -44,13 +44,15 @@ export function AdminSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className="ml-2 pt-4 [&>div[data-sidebar='sidebar']]:!bg-background !border-0" {...props}>
+    <Sidebar className="ml-2 pt-4 [&>div[data-sidebar='sidebar']]:!bg-background" {...props}>
       <SidebarHeader className="space-y-2 p-2">
-        <Button variant="ghost" className="w-full mb-4 h-12 flex items-center">
-          <Airplay />
-          <h3 className="pl-4 scroll-m-20 text-2xl font-semibold tracking-tight">FastFoodCode</h3>
+        <Button variant="ghost" className="w-full mb-4 h-16">
+          <Link className="flex items-center gap-4" to="/home">
+            <img src="/ffc.png" alt="FastFoodCode" className="w-16 h-16"/>
+            <span className="pl-2 scroll-m-20 text-xl font-semibold tracking-tight">FastFoodCode</span>
+          </Link>
         </Button>
-        <Search />
+        <Search/>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

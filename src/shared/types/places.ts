@@ -1,32 +1,22 @@
 import {z} from "zod";
 
-export const createPlaceSchema = z.object({
-  name: z.string().min(1, "Введите название"),
-  address: z.string().min(1, "Введите адрес"),
-  token: z.string()
-    .min(1, "Введите токен бота")
-    .transform((val) => val.trim())
-})
-
-export type CreatePlaceForm = z.infer<typeof createPlaceSchema>
-
-export const basePlaceSchema = z.object({
+export const placeSchema = z.object({
   id: z.string(),
   name: z.string(),
   address: z.string(),
-  status: z.string().default("Работает"),
+  status: z.string().default("Работает").optional(),
 })
 
-export type IBasePlace = z.infer<typeof basePlaceSchema>
+export type IBasePlace = z.infer<typeof placeSchema>
 
-export const placeSchema = basePlaceSchema.extend({
+export const storePlaceSchema = placeSchema.extend({
   token: z.string(),
 })
 
-export type IPlace = z.infer<typeof placeSchema>
+export type IPlace = z.infer<typeof storePlaceSchema>
 
 export const placesStateSchema = z.object({
-  placesList: z.array(placeSchema).default([]),
+  placesList: z.array(storePlaceSchema).default([]),
   loadingPlaces: z.boolean().default(false),
   isAuthError: z.boolean().default(false).optional(),
 })
@@ -34,7 +24,7 @@ export const placesStateSchema = z.object({
 export type IPlacesState = z.infer<typeof placesStateSchema>
 
 export const placesResponseSchema = z.object({
-  data: z.array(placeSchema)
+  data: z.array(storePlaceSchema)
 })
 
 export type PlacesResponse = z.infer<typeof placesResponseSchema>

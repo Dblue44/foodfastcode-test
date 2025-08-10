@@ -3,15 +3,8 @@ import {TableCellViewer} from "@widgets/placesList/tableCellViewer";
 import {Checkbox} from "@shared/ui/checkbox.tsx";
 import {Badge} from "@shared/ui/badge.tsx";
 import type {IBasePlace} from "@shared/types";
-import {CheckCircle2Icon, Clock, Drill, EllipsisVertical} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@shared/ui/dropdown-menu.tsx";
-import {Button} from "@shared/ui/button.tsx";
+import {CheckCircle2Icon, Clock, Drill} from "lucide-react";
+import {PlaceActionsCell} from "@widgets/placesList";
 
 export const placeStatuses = ["Работает", "Приостановлено", "Технические работы"]
 
@@ -84,26 +77,7 @@ export const utils: ColumnDef<IBasePlace>[] = [
   },
   {
     id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="default"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8 ml-auto mr-4"
-            size="icon"
-          >
-            <EllipsisVertical />
-            <span className="sr-only">Открыть меню</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Изменить</DropdownMenuItem>
-          <DropdownMenuItem>В избранное</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Удалить</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => <PlaceActionsCell place={row.original} />,
     enableHiding: false,
   },
 ]
