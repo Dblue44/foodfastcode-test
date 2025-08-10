@@ -19,9 +19,8 @@ export const removePlace = (placeId: string) : Promise<PlacesResponse> => {
 
 export const editPlace = (data: IPlace) : Promise<PlacesResponse> => {
   const formData = new FormData()
-  formData.append('id', data.id)
   formData.append('name', data.name)
   formData.append('address', data.address)
   formData.append('token', data.token)
-  return apiBaseInstance.put<PlacesResponse>(`${data.id}`, formData)
+  return apiBaseInstance.put<PlacesResponse>(`?id=${data.id}`, formData)
 }
