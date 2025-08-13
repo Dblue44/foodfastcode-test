@@ -1,21 +1,27 @@
 import {useAppDispatch} from "@shared/lib";
-import {type Category, type ProductFormType} from "@shared/types";
+import {type ProductFormType} from "@shared/types";
 import {createUserPlace} from "@entities/place";
 import {toast} from "sonner";
 import {AlertCircleIcon} from "lucide-react";
 import {createUserCategoryProduct} from "@entities/product";
-import {Button} from "@shared/ui/button.tsx";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
 } from "@shared/ui/dialog";
 import {ProductForm} from "@widgets/productForm";
+import type {ProductDialogProps} from "@widgets/productDialog";
+import {useMemo} from "react";
 
-export function ProductDialog({category}: {category?: Category}) {
+export function ProductDialog({
+  open,
+  setOpen,
+  category,
+  mode,
+  product,
+  title
+}: ProductDialogProps) {
   const dispatch = useAppDispatch()
 
   const onSubmit = async (values: ProductFormType) => {
@@ -31,18 +37,19 @@ export function ProductDialog({category}: {category?: Category}) {
     })
   }
 
+  const computedTitle = useMemo(
+    () => title ?? (mode === "edit" ? "Изменение категории" : "Добавление категории"),
+    [mode, title]
+  )
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        {category && <Button variant="outline">Добавить</Button>}
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Добавление товара</DialogTitle>
-          <DialogDescription>Заполните данные нового товара и прикрепите фото</DialogDescription>
+          <DialogTitle>{computedTitle}</DialogTitle>
         </DialogHeader>
         <div className="w-full max-w-xl mx-auto px-4">
-          {category && <ProductForm onSubmit={onSubmit} category={category}/>}
+          <ProductForm onSubmit={onSubmit} category={category} product={product} mode={mode}/>
         </div>
       </DialogContent>
     </Dialog>

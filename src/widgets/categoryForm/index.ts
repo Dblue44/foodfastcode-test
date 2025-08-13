@@ -1,2 +1,2 @@
 export {CategoryForm} from './categoryForm'
-export type {CategoryFormProps, DialogMode} from './types'
+export type {CategoryFormProps} from './types'

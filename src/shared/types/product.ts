@@ -50,6 +50,7 @@ export const productFormSchema = z.object({
   name: z.string().min(1, "Введите название"),
   price: z.coerce.number().gt(0, "Введите цену"),
   discountPrice: z.coerce.number(),
+  discountPercent: z.coerce.number().gte(0).lte(100),
   isPopular: z.coerce.boolean(),
   description: z.string().min(1, "Введите описание"),
   categoryId: z.string().min(1, "Выберите категорию"),

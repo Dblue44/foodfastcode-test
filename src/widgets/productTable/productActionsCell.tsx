@@ -1,4 +1,3 @@
-import type {Product} from "@shared/types";
 import {useAppDispatch} from "@shared/lib";
 import {
   DropdownMenu,
@@ -10,13 +9,14 @@ import {
 import {Button} from "@shared/ui/button.tsx";
 import {EllipsisVertical, Pencil, Trash2} from "lucide-react";
 import {deleteUserProduct} from "@entities/product";
+import type {ProductActionsCellProps} from "@widgets/productTable";
 
-export function ProductActionsCell({ product }: { product: Product }) {
+export function ProductActionsCell({ product, onEdit }: ProductActionsCellProps) {
   const dispatch = useAppDispatch();
   // TODO SELECTOR ВЫБРАННОГО ЗАВЕДЕНИЯ
 
-  const onEdit = () => {
-    // TODO ОТКРЫВАТЬ МИНИКАРТОЧКУ
+  const handleEdit = () => {
+    onEdit?.(product);
   };
 
   const onDelete = async () => {
@@ -36,7 +36,7 @@ export function ProductActionsCell({ product }: { product: Product }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuItem onClick={onEdit} className="flex items-center gap-2">
+        <DropdownMenuItem onClick={handleEdit} className="flex items-center gap-2">
           <Pencil className="size-4" />
           Изменить
         </DropdownMenuItem>

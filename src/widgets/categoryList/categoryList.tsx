@@ -13,18 +13,16 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@sh
 import {cn, useAppDispatch} from "@shared/lib";
 import {setCategoryId} from "@entities/product";
 import {Input} from "@shared/ui/input.tsx";
-import {CategoryForm, type DialogMode} from "@widgets/categoryForm";
-import {useIsMobile} from "@shared/hooks/use-mobile.ts";
+import {CategoryForm} from "@widgets/categoryForm";
 import {isInteractiveTarget} from "@shared/utils";
 import {useMemo, useState} from "react";
-import type {Category} from "@shared/types";
+import type {Category, DialogMode} from "@shared/types";
 import {Button} from "@shared/ui/button.tsx";
 
-export function CategoryList({data, isCategoriesLoading}: CategoryListProps) {
+export function CategoryList({data, isCategoriesLoading, isNarrow}: CategoryListProps) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const dispatch = useAppDispatch()
-  const isMobile = useIsMobile()
 
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<DialogMode>("create")
@@ -59,10 +57,17 @@ export function CategoryList({data, isCategoriesLoading}: CategoryListProps) {
     meta: useMemo(() => ({ onEdit: openEdit }), []),
   })
 
+  const rowsCount = categoryTable.getRowModel().rows.length
+  const ROW_H = 44      // средняя высота трока (px)
+  const HEAD_H = 44     // высота заголовка (px)
+  const MAX_ROWS = 5
+  const enableScroll = rowsCount > MAX_ROWS
+  const maxHeightPx = HEAD_H + ROW_H * MAX_ROWS
+
   return (
     <div className={cn(
       "w-full flex flex-wrap content-start mb-2 mr-2",
-      !isMobile && "max-w-[500px]"
+      !isNarrow && "max-w-[500px]"
     )}>
       <div className="flex items-center h-8 gap-2 mb-2">
         <span className="text-2xl font-semibold tracking-tight text-foreground">
@@ -82,77 +87,82 @@ export function CategoryList({data, isCategoriesLoading}: CategoryListProps) {
           <Button variant="outline" onClick={openCreate}>Добавить</Button>
         </div>
       </div>
-      <div className="overflow-hidden rounded-lg border">
-        <Table className="table-fixed">
-          <colgroup>
-            {categoryTable.getVisibleLeafColumns().slice(0, -1).map((col) => (
-              <col key={col.id} />
-            ))}
-            <col className="w-42" />
-          </colgroup>
-          <TableHeader className="sticky top-0 z-10 bg-muted">
-            {categoryTable.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {categoryTable.getRowModel().rows?.length ? (
-              categoryTable.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={(e) => {
-                    const target = e.target as HTMLElement;
-                    if (isInteractiveTarget(target)) return;
-                    const category = row.original;
-                    dispatch(setCategoryId(category.id));
-                  }}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+      <div className="w-full rounded-lg border overflow-hidden">
+        <div
+          className={cn(enableScroll && "overflow-y-auto")}
+          style={enableScroll ? { maxHeight: maxHeightPx } : undefined}
+        >
+          <Table className="table-fixed">
+            <colgroup>
+              {categoryTable.getVisibleLeafColumns().slice(0, -1).map((col) => (
+                <col key={col.id} />
+              ))}
+              <col className="w-42" />
+            </colgroup>
+            <TableHeader>
+              {categoryTable.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id} className="sticky top-0 z-10 pl-4">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ))
-            ) : isCategoriesLoading
-              ?
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Загрузка...
-                </TableCell>
-              </TableRow>
-              : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  {sorting.length ? "По выбранному фильтру не найдено ни одной категории" : "В данном заведение не добавлены категории"}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {categoryTable.getRowModel().rows?.length ? (
+                categoryTable.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      if (isInteractiveTarget(target)) return;
+                      const category = row.original;
+                      dispatch(setCategoryId(category.id));
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="pl-4">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : isCategoriesLoading
+                ?
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    Загрузка...
+                  </TableCell>
+                </TableRow>
+                : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      {sorting.length ? "По выбранному фильтру не найдено ни одной категории" : "В данном заведение не добавлены категории"}
+                    </TableCell>
+                  </TableRow>
+                )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       <CategoryForm
         open={open}

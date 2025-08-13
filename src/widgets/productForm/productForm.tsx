@@ -9,8 +9,25 @@ import {Switch} from "@shared/ui/switch.tsx";
 import {DialogClose} from "@shared/ui/dialog.tsx";
 import {Button} from "@shared/ui/button.tsx";
 import {Textarea} from "@shared/ui/textarea.tsx";
+import {useEffect} from "react";
 
-export function ProductForm({onSubmit, category}: CreateProductFormProps) {
+const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
+
+function calcPercentFromPrices(price?: number, discountPrice?: number): number {
+  if (!price || price <= 0) return 0;
+  if (!discountPrice || discountPrice <= 0 || discountPrice >= price) return 0;
+  const p = (1 - discountPrice / price) * 100;
+  return Math.min(100, Math.max(0, round2(p)));
+}
+
+function calcDiscountPrice(price: number, percent: number): number {
+  if (!price || price <= 0) return 0;
+  const p = Math.min(100, Math.max(0, percent || 0));
+  const dp = price * (1 - p / 100);
+  return Math.min(price, Math.max(0, round2(dp)));
+}
+
+export function ProductForm({onSubmit, category, product, mode}: CreateProductFormProps) {
 
   const form = useForm<ProductFormType>({
     resolver: zodResolver(productFormSchema),
@@ -18,6 +35,7 @@ export function ProductForm({onSubmit, category}: CreateProductFormProps) {
       name: "",
       price: 0,
       discountPrice: 0,
+      discountPercent: 0,
       isPopular: false,
       description: "",
       categoryId: category.id,
@@ -25,6 +43,26 @@ export function ProductForm({onSubmit, category}: CreateProductFormProps) {
     },
     mode: "onSubmit",
   })
+
+  const { watch, setValue } = form;
+
+  const price = watch("price");
+  const discountPercent = watch("discountPercent");
+
+  useEffect(() => {
+    if (!product) return;
+    const initialPercent = calcPercentFromPrices(product.price, product.discountPrice);
+    form.reset({
+      ...product,
+      discountPercent: initialPercent,
+      categoryId: category.id,
+    });
+  }, [product, category.id, form]);
+
+  useEffect(() => {
+    const newDiscountPrice = calcDiscountPrice(Number(price) || 0, Number(discountPercent) || 0);
+    setValue("discountPrice", newDiscountPrice, { shouldValidate: true, shouldDirty: true });
+  }, [price, discountPercent, setValue]);
 
   const isSubmitting = form.formState.isSubmitting
 
@@ -57,10 +95,22 @@ export function ProductForm({onSubmit, category}: CreateProductFormProps) {
               <FormLabel>Цена</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="0"
+                  placeholder=""
                   type="number"
+                  inputMode="decimal"
+                  min={0}
+                  step="0.01"
                   autoComplete="off"
-                  {...field}
+                  value={Number(field.value)}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    if (raw === "") {
+                      field.onChange("");
+                      return;
+                    }
+                    const num = Number(raw);
+                    field.onChange(num);
+                  }}
                 />
               </FormControl>
               <FormMessage/>
@@ -70,19 +120,52 @@ export function ProductForm({onSubmit, category}: CreateProductFormProps) {
 
         <FormField
           control={form.control}
-          name="discountPrice"
-          render={({field}) => (
+          name="discountPercent"
+          render={({ field }) => (
             <FormItem>
-              <FormLabel>Цена со скидкой</FormLabel>
+              <FormLabel>% скидки</FormLabel>
               <FormControl>
                 <Input
                   placeholder="0"
                   type="number"
+                  inputMode="decimal"
+                  min={0}
+                  max={100}
+                  step="0.01"
                   autoComplete="off"
-                  {...field}
+                  value={Number(field.value)}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    if (raw === "") {
+                      field.onChange("");
+                      return;
+                    }
+                    const num = Number(raw);
+                    field.onChange(num);
+                  }}
                 />
               </FormControl>
-              <FormMessage/>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="discountPrice"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Цена со скидкой</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  readOnly
+                  tabIndex={-1}
+                  value={field.value?.toFixed ? field.value.toFixed(2) : field.value}
+                  className="bg-muted/50 cursor-default"
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -130,7 +213,7 @@ export function ProductForm({onSubmit, category}: CreateProductFormProps) {
             <Button variant="outline">Закрыть</Button>
           </DialogClose>
           <Button type="submit" className="ml-auto" disabled={isSubmitting}>
-            {isSubmitting ? "Создаём…" : "Создать"}
+            {isSubmitting ? "Сохраняем…" : (mode === "edit" ? "Сохранить" : "Создать")}
           </Button>
         </CardFooter>
       </form>

@@ -22,13 +22,14 @@ import {
 } from "@entities/category";
 import {CategoryList} from "@widgets/categoryList";
 import {selectIsProductsLoading} from "@entities/product";
-import {useIsMobile} from "@shared/hooks/use-mobile.ts";
+import { useContainerWidth } from "@shared/hooks/use-container-width";
+
 
 export function EditPlacePage() {
   const {id} = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch()
-  const isMobile = useIsMobile()
+  const { ref: tabsContentRef, isNarrow } = useContainerWidth(1400);
 
   const places = useAppSelector(selectPlacesList);
   const place = useMemo(() => places?.find(p => String(p.id) === String(id)), [places, id]);
@@ -71,23 +72,21 @@ export function EditPlacePage() {
     <div className="w-full max-w-[1440px] px-4">
       <Toaster position="top-center" richColors/>
       <div className="flex items-start gap-2 mb-2">
-        {!isMobile &&
-          <Button type="button" variant="outline" className="absolute" onClick={() => navigate(-1)}>
-            Назад
-          </Button>
-        }
+        <Button type="button" variant="outline" className="absolute" onClick={() => navigate(-1)}>
+          Назад
+        </Button>
         <Tabs defaultValue="main" className="flex-1">
           <TabsList className="ml-20">
             <TabsTrigger value="main">Основное</TabsTrigger>
             <TabsTrigger value="settings">Настройки</TabsTrigger>
           </TabsList>
-          <TabsContent value="main">
+          <TabsContent value="main" ref={tabsContentRef}>
             <div className={cn(
               "flex justify-between",
-              isMobile ? "flex-wrap" : "flex-nowrap"
+              isNarrow ? "flex-wrap" : "flex-nowrap"
             )}>
-              <CategoryList data={categories} isCategoriesLoading={isCategoriesLoading}/>
-              <ProductTable data={products} category={activeCategory} isProductsLoading={isProductsLoading}/>
+              <CategoryList data={categories} isCategoriesLoading={isCategoriesLoading} isNarrow={isNarrow}/>
+              {activeCategory && <ProductTable data={products} category={activeCategory} isProductsLoading={isProductsLoading}/>}
             </div>
           </TabsContent>
           <TabsContent value="settings">

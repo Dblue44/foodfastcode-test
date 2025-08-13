@@ -2,6 +2,7 @@ import type {ColumnDef} from "@tanstack/react-table";
 import type {Product} from "@shared/types";
 import {Checkbox} from "@shared/ui/checkbox.tsx";
 import {TableCellViewer, ProductActionsCell} from "@widgets/productTable";
+import type {TableMeta} from "@widgets/categoryList";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -39,20 +40,20 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "price",
     header: "Цена",
     cell: ({row}) => {
-      return <TableCellViewer data={row.original.price.toString(2).toString()}/>
+      return <TableCellViewer data={row.original.price.toFixed(2)}/>
     },
-    enableHiding: true,
+    enableHiding: false,
   },
   {
     accessorKey: "discountPrice",
     header: "Цена со скидкой",
     cell: ({row}) => {
-      return <TableCellViewer data={row.original.discountPrice.toString(2).toString()}/>
+      return <TableCellViewer data={row.original.discountPrice.toFixed(2)}/>
     },
     enableHiding: true,
   },
   {
-    id: "discountPercent",
+    accessorKey: "discountPercent",
     header: "% скидки",
     cell: ({row}) => {
       const discountPercent = 100 - (row.original.discountPrice / row.original.price * 100)
@@ -65,7 +66,7 @@ export const columns: ColumnDef<Product>[] = [
     enableHiding: true,
   },
   {
-    id: "isPopular",
+    accessorKey: "isPopular",
     header: "Популярный товар",
     cell: ({row}) => {
       return <TableCellViewer data={row.original.isPopular.toString()}/>
@@ -74,7 +75,7 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <ProductActionsCell product={row.original} />,
+    cell: ({ row, table }) => <ProductActionsCell product={row.original} onEdit={(table.options.meta as TableMeta)?.onEdit}/>,
     enableHiding: false,
   },
 ]

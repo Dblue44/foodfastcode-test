@@ -19,7 +19,9 @@ export type {
   ResolverArgs,
   CrumbResolver,
   BreadcrumbsMap,
-  ApiDataOf} from './common'
+  ApiDataOf,
+  DialogMode
+} from './common'
 export {
   crumbSchema,
   resolverArgsSchema,

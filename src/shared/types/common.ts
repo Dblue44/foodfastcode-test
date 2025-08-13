@@ -25,3 +25,9 @@ export type CrumbResolver = z.infer<typeof crumbResolverSchema>
 
 export const breadcrumbsMapSchema = z.record(crumbResolverSchema)
 export type BreadcrumbsMap = z.infer<typeof breadcrumbsMapSchema>
+
+export const dialogModeSchema = z.object({
+  mode: z.enum(["create", "edit"])
+})
+
+export type DialogMode = z.infer<typeof dialogModeSchema>["mode"];
