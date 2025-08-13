@@ -3,9 +3,8 @@ import {TableCellViewer} from "@widgets/placeList";
 import {Checkbox} from "@shared/ui/checkbox.tsx";
 import {Badge} from "@shared/ui/badge.tsx";
 import type {BasePlace} from "@shared/types";
-import {CheckCircle2Icon, Clock, Drill} from "lucide-react";
+import {ArrowDownAZ, ArrowUpAZ,} from "lucide-react";
 import {PlaceActionsCell} from "widgets/placeList";
-import React from "react";
 
 export const placeStatuses = ["Работает", "Приостановлено", "Технические работы"]
 
@@ -36,7 +35,19 @@ export const columns: ColumnDef<BasePlace>[] = [
   },
   {
     accessorKey: "name",
-    header: "Название",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return (
+        <button
+          className="flex items-center gap-1 select-none"
+          onClick={() => column.toggleSorting(isSorted === "asc")}
+        >
+          Название
+          {isSorted === "asc" && <ArrowDownAZ size={16} />}
+          {isSorted === "desc" && <ArrowUpAZ size={16} />}
+        </button>
+      );
+    },
     cell: ({row}) => {
       return <TableCellViewer item={row.original}/>
     },
@@ -44,7 +55,19 @@ export const columns: ColumnDef<BasePlace>[] = [
   },
   {
     accessorKey: "address",
-    header: "Адрес",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return (
+        <button
+          className="flex items-center gap-1 select-none"
+          onClick={() => column.toggleSorting(isSorted === "asc")}
+        >
+          Адрес
+          {isSorted === "asc" && <ArrowDownAZ size={16} />}
+          {isSorted === "desc" && <ArrowUpAZ size={16} />}
+        </button>
+      );
+    },
     cell: ({row}) => (
       <Badge variant="outline" className="px-1.5 text-muted-foreground">
         {row.original.address}
@@ -52,31 +75,31 @@ export const columns: ColumnDef<BasePlace>[] = [
     ),
     enableHiding: true,
   },
-  {
-    accessorKey: "status",
-    header: "Статус",
-    filterFn: (row, columnId, filterValue) => {
-      if (!filterValue?.length) return true
-      return filterValue.includes(row.getValue(columnId))
-    },
-    cell: ({row}) => {
-      const status = row.original.status
-      if (!status) return null
-      const iconMap: Record<string, React.ReactNode> = {
-        "Работает": <CheckCircle2Icon className="text-green-500 dark:text-green-400 size-4" />,
-        "Приостановлено": <Clock className="text-blue-500 size-4" />,
-        "Технические работы": <Drill className="text-red-500 size-4" />,
-      }
-
-      return (
-        <Badge variant="outline" className="flex items-center gap-1 px-1.5 text-muted-foreground">
-          {iconMap[status]}
-          {status}
-        </Badge>
-      )
-    },
-    enableHiding: true,
-  },
+  // {
+  //   accessorKey: "status",
+  //   header: "Статус",
+  //   filterFn: (row, columnId, filterValue) => {
+  //     if (!filterValue?.length) return true
+  //     return filterValue.includes(row.getValue(columnId))
+  //   },
+  //   cell: ({row}) => {
+  //     const status = row.original.status
+  //     if (!status) return null
+  //     const iconMap: Record<string, React.ReactNode> = {
+  //       "Работает": <CheckCircle2Icon className="text-green-500 dark:text-green-400 size-4" />,
+  //       "Приостановлено": <Clock className="text-blue-500 size-4" />,
+  //       "Технические работы": <Drill className="text-red-500 size-4" />,
+  //     }
+  //
+  //     return (
+  //       <Badge variant="outline" className="flex items-center gap-1 px-1.5 text-muted-foreground">
+  //         {iconMap[status]}
+  //         {status}
+  //       </Badge>
+  //     )
+  //   },
+  //   enableHiding: true,
+  // },
   {
     id: "actions",
     cell: ({ row }) => <PlaceActionsCell place={row.original} />,
