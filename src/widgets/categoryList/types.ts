@@ -10,11 +10,11 @@ export const categoryListPropsSchema = z.object({
 
 export type CategoryListProps = z.infer<typeof categoryListPropsSchema>
 
-export const tableMetaSchema = z.object({
+export const categoryTableMetaSchema = z.object({
   onEdit: z.function().args(categorySchema).returns(z.void()),
 })
 
-export type TableMeta = z.infer<typeof tableMetaSchema>
+export type CategoryTableMeta = z.infer<typeof categoryTableMetaSchema>
 
 export const categoryActionsCellPropsSchema = z.object({
   category: categorySchema,

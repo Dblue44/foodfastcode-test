@@ -1,4 +1,4 @@
-export type {ProductListProps, ProductActionsCellProps} from './types'
+export type {ProductListProps, ProductActionsCellProps, ProductTableMeta} from './types'
 export {productListPropsSchema} from './types'
 export {ProductTable} from './productTable'
 export {columns} from './columns.tsx'

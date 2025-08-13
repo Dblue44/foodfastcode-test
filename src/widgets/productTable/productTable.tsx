@@ -26,7 +26,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
 
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<DialogMode>("create")
-  const [initialProduct, setInitialProduct] = useState<Product | null>(null)
+  const [initialProduct, setInitialProduct] = useState<Product | undefined>(undefined)
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -194,7 +194,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
         setOpen={setOpen}
         title={title}
         mode={mode}
-        initialProduct={initialProduct}
+        product={initialProduct}
         category={category}
       />
     </div>

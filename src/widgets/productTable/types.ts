@@ -15,3 +15,9 @@ export const productActionsCellPropsSchema = z.object({
 })
 
 export type ProductActionsCellProps = z.infer<typeof productActionsCellPropsSchema>
+
+export const productTableMetaSchema = z.object({
+  onEdit: z.function().args(productSchema).returns(z.void()),
+})
+
+export type ProductTableMeta = z.infer<typeof productTableMetaSchema>

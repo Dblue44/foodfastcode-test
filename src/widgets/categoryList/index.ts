@@ -1,5 +1,5 @@
 export {CategoryList} from './categoryList'
-export type {CategoryListProps, TableMeta, CategoryActionsCellProps} from './types'
+export type {CategoryListProps, CategoryTableMeta, CategoryActionsCellProps} from './types'
 export {categoryListPropsSchema} from './types'
 export {CategoryActionsCell} from './categoryActionsCell'
 export {columns} from './columns'

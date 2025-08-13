@@ -1,8 +1,7 @@
 import type {ColumnDef} from "@tanstack/react-table";
 import type {Product} from "@shared/types";
 import {Checkbox} from "@shared/ui/checkbox.tsx";
-import {TableCellViewer, ProductActionsCell} from "@widgets/productTable";
-import type {TableMeta} from "@widgets/categoryList";
+import {TableCellViewer, ProductActionsCell, type ProductTableMeta} from "@widgets/productTable";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -75,7 +74,7 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     id: "actions",
-    cell: ({ row, table }) => <ProductActionsCell product={row.original} onEdit={(table.options.meta as TableMeta)?.onEdit}/>,
+    cell: ({ row, table }) => <ProductActionsCell product={row.original} onEdit={(table.options.meta as ProductTableMeta)?.onEdit}/>,
     enableHiding: false,
   },
 ]

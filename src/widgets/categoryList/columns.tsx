@@ -1,6 +1,6 @@
 import type {ColumnDef} from "@tanstack/react-table";
 import type {Category} from "@shared/types";
-import {CategoryActionsCell, type TableMeta} from "@widgets/categoryList";
+import {CategoryActionsCell, type CategoryTableMeta} from "@widgets/categoryList";
 
 
 export const columns: ColumnDef<Category>[] = [
@@ -20,7 +20,7 @@ export const columns: ColumnDef<Category>[] = [
     id: "actions",
     cell: ({row, table}) => <CategoryActionsCell
       category={row.original}
-      onEdit={(table.options.meta as TableMeta)?.onEdit}
+      onEdit={(table.options.meta as CategoryTableMeta)?.onEdit}
     />,
     enableHiding: false,
   },
