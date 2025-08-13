@@ -41,9 +41,23 @@ function calcDiscountPrice(price: number, percent: number): number {
   return Math.min(price, Math.max(0, round2(dp)));
 }
 
+async function preloadImage(url: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const clean = () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+    img.onload = () => { clean(); resolve(); };
+    img.onerror = () => { clean(); reject(new Error("Image load error")); };
+    img.decode?.().then(resolve).catch(() => {/*ignore*/});
+    img.src = url;
+  });
+}
+
 export function ProductForm({onSubmit, category, product, mode}: CreateProductFormProps) {
   const [uploading, setUploading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | undefined>(product?.imageId);
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
   const objectUrlRef = useRef<string | null>(null);
 
   const isMobile = useIsMobile()
@@ -81,19 +95,31 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
     const objectUrl = URL.createObjectURL(file);
     if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
     objectUrlRef.current = objectUrl;
-    setPreviewUrl(objectUrl);
-    const result = await dispatch(loadImage(file));
-    if (loadImage.rejected.match(result)) {
-      toast.error("Не удалось загрузить изображение", {icon: <AlertCircleIcon />, richColors: true,})
+
+    try {
+      try {
+        await preloadImage(objectUrl);
+      } catch {
+        toast.error("Не удалось загрузить изображение", {icon: <AlertCircleIcon />, richColors: true,})
+        return;
+      }
+      setPreviewUrl(objectUrl);
+
+      const result = await dispatch(loadImage(file));
+      if (loadImage.rejected.match(result)) {
+        toast.error("Не удалось загрузить изображение", {icon: <AlertCircleIcon />, richColors: true,})
+      }
+      if (loadImage.fulfilled.match(result)) {
+        setValue("image", result.payload.data.image_id, { shouldValidate: true, shouldDirty: true })
+        toast.success("Изображение успешно загружено", {
+          icon: <Check />,
+          richColors: true,
+        })
+      }
+    } finally {
+      setUploading(false);
     }
-    if (loadImage.fulfilled.match(result)) {
-      setValue("image", result.payload.data.image_id, { shouldValidate: true, shouldDirty: true })
-      toast.success("Изображение успешно загружено", {
-        icon: <Check />,
-        richColors: true,
-      })
-    }
-    setUploading(false);
+
     return () => URL.revokeObjectURL(objectUrl);
   }, [dispatch, setValue]);
 
@@ -117,8 +143,14 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
+    }
     if (!product) {
       setPreviewUrl(undefined);
+      setUploading(false);
       return;
     }
     const initialPercent = calcPercentFromPrices(product.price, product.discountPrice);
@@ -127,7 +159,29 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
       discountPercent: initialPercent,
       categoryId: category.id,
     });
-    setPreviewUrl(buildProductImageUrl(product.image));
+    const url = buildProductImageUrl(product.image);
+    setPreviewUrl(undefined);
+    if (!url) {
+      setUploading(false);
+      return;
+    }
+    setUploading(true);
+    preloadImage(url)
+      .then(() => {
+        if (cancelled) return;
+        setPreviewUrl(url);
+        setUploading(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setPreviewUrl(undefined);
+        setUploading(false);
+        toast.error("Не удалось загрузить фото продукта", {
+          icon: <AlertCircleIcon />,
+          richColors: true,
+        });
+      });
+    return () => { cancelled = true; };
   }, [product, category.id, form]);
 
   useEffect(() => {
@@ -173,21 +227,18 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
                 <FormLabel>Цена</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder=""
-                    type="number"
+                    placeholder="0"
+                    type="text"
                     inputMode="decimal"
                     min={0}
                     step="0.01"
                     autoComplete="off"
-                    value={Number(field.value)}
+                    value={field.value === 0 ? "" : String(field.value)}
                     onChange={(e) => {
-                      const raw = e.target.value;
-                      if (raw === "") {
-                        field.onChange("");
-                        return;
-                      }
-                      const num = Number(raw);
-                      field.onChange(num);
+                      let raw = e.target.value;
+                      raw = raw.replace(/[^0-9.]/g, "");
+                      raw = raw.replace(/^0+(\d)/, "$1");
+                      field.onChange(raw);
                     }}
                   />
                 </FormControl>
@@ -204,21 +255,15 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
                 <FormControl>
                   <Input
                     placeholder="0"
-                    type="number"
+                    type="text"
                     inputMode="decimal"
-                    min={0}
-                    max={100}
-                    step="0.01"
                     autoComplete="off"
-                    value={Number(field.value)}
+                    value={field.value === 0 ? "" : String(field.value)}
                     onChange={(e) => {
-                      const raw = e.target.value;
-                      if (raw === "") {
-                        field.onChange("");
-                        return;
-                      }
-                      const num = Number(raw);
-                      field.onChange(num);
+                      let raw = e.target.value;
+                      raw = raw.replace(/[^0-9.]/g, "");
+                      raw = raw.replace(/^0+(\d)/, "$1");
+                      field.onChange(raw);
                     }}
                   />
                 </FormControl>
