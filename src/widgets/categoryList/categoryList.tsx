@@ -99,7 +99,7 @@ export function CategoryList({data, isCategoriesLoading, isNarrow}: CategoryList
               ))}
               <col className="w-42" />
             </colgroup>
-            <TableHeader>
+            <TableHeader className="sticky top-0 z-10 bg-muted">
               {categoryTable.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {

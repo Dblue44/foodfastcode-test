@@ -4,7 +4,9 @@ export {
   setProductPlaceId,
   setCategoryId,
   stopLoadingProducts,
-  resetCategoryChanged
+  resetCategoryChanged,
+  extendProductList,
+  replaceProductInList
 } from './model/productSlice.ts'
 export {
   fetchUserCategoryProducts,
@@ -12,7 +14,8 @@ export {
   createUserCategoryProduct,
   editUserProduct,
   deleteUserProduct,
-  loadUserProductImage
+  loadUserProductImage,
+  loadImage
 } from './model/productThunk.ts'
 export {
   selectProductStoreBase,

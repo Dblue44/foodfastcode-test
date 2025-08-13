@@ -31,3 +31,10 @@ export const dialogModeSchema = z.object({
 })
 
 export type DialogMode = z.infer<typeof dialogModeSchema>["mode"];
+
+export const loadImageResponseSchema = apiDataSchema(z.object({
+  image: z.any(),
+  image_id: z.string(),
+}))
+
+export type LoadImageResponse = z.infer<typeof loadImageResponseSchema>

@@ -25,7 +25,7 @@ export function CategoryActionsCell({category, onEdit}: CategoryActionsCellProps
     setDeleting(true)
     const result = await dispatch(deleteUserPlaceCategory(category.id))
     if (deleteUserPlaceCategory.rejected.match(result)) {
-      const errorMessage = result?.payload?.error || "Неизвестная ошибка"
+      const errorMessage = result.payload?.error || "Неизвестная ошибка"
       toast.error("Ошибка при удалении категории", {
         icon: <AlertCircleIcon/>,
         richColors: true,

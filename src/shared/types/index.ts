@@ -20,7 +20,8 @@ export type {
   CrumbResolver,
   BreadcrumbsMap,
   ApiDataOf,
-  DialogMode
+  DialogMode,
+  LoadImageResponse
 } from './common'
 export {
   crumbSchema,

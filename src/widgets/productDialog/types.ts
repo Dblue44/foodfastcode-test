@@ -8,6 +8,7 @@ export const ProductDialogPropsSchema = z.object({
   category: categorySchema,
   mode: dialogModeSchema.shape.mode,
   product: productSchema.optional(),
+  setProduct: z.function().args(z.any()).returns(z.void()),
   title: z.string(),
 })
 

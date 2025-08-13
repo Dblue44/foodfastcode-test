@@ -5,11 +5,25 @@ import type {CreateProductFormProps} from "@widgets/productForm";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {type ProductFormType, productFormSchema} from "@shared/types";
-import {Switch} from "@shared/ui/switch.tsx";
 import {DialogClose} from "@shared/ui/dialog.tsx";
 import {Button} from "@shared/ui/button.tsx";
 import {Textarea} from "@shared/ui/textarea.tsx";
-import {useEffect} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useIsMobile} from "@shared/hooks/use-mobile.ts";
+import {toast} from "sonner";
+import {AlertCircleIcon, Check} from "lucide-react";
+import {loadImage} from "@entities/product";
+import {useAppDispatch} from "@shared/lib";
+import {UploadImagePanel} from "@widgets/loadProductImage";
+import {CONFIG} from "@/config";
+import {Checkbox} from "@shared/ui/checkbox.tsx";
+
+const API_MAX_FILE_SIZE = CONFIG.API_MAX_FILE_SIZE
+
+const buildProductImageUrl = (imageId?: string) => {
+  if (!imageId) return undefined;
+  return `${CONFIG.API_BASE_URL}uploads/${imageId}`;
+};
 
 const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
 
@@ -28,6 +42,12 @@ function calcDiscountPrice(price: number, percent: number): number {
 }
 
 export function ProductForm({onSubmit, category, product, mode}: CreateProductFormProps) {
+  const [uploading, setUploading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(product?.imageId);
+  const objectUrlRef = useRef<string | null>(null);
+
+  const isMobile = useIsMobile()
+  const dispatch = useAppDispatch();
 
   const form = useForm<ProductFormType>({
     resolver: zodResolver(productFormSchema),
@@ -39,24 +59,75 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
       isPopular: false,
       description: "",
       categoryId: category.id,
-      imageId: "",
+      image: "",
     },
     mode: "onSubmit",
   })
-
   const { watch, setValue } = form;
-
   const price = watch("price");
   const discountPercent = watch("discountPercent");
 
+  const handlePickFile = useCallback(async (file: File) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.info("Выберите изображение", {icon: <AlertCircleIcon />, richColors: true,})
+      return;
+    }
+    if (file.size > Number(API_MAX_FILE_SIZE)) {
+      toast.error("Слишком большой файл. Лимит — 10MB.", {icon: <AlertCircleIcon />, richColors: true,})
+      return;
+    }
+    setUploading(true);
+    const objectUrl = URL.createObjectURL(file);
+    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+    objectUrlRef.current = objectUrl;
+    setPreviewUrl(objectUrl);
+    const result = await dispatch(loadImage(file));
+    if (loadImage.rejected.match(result)) {
+      toast.error("Не удалось загрузить изображение", {icon: <AlertCircleIcon />, richColors: true,})
+    }
+    if (loadImage.fulfilled.match(result)) {
+      setValue("image", result.payload.data.image_id, { shouldValidate: true, shouldDirty: true })
+      toast.success("Изображение успешно загружено", {
+        icon: <Check />,
+        richColors: true,
+      })
+    }
+    setUploading(false);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [dispatch, setValue]);
+
+  const handleClearImage = useCallback(() => {
+    setPreviewUrl(undefined);
+    setValue("image", "", { shouldValidate: true, shouldDirty: true });
+  }, [setValue]);
+
+  const gridClass = useMemo(
+    () => (isMobile ? "grid grid-cols-1 gap-6" : "grid grid-cols-2 gap-6"),
+    [isMobile]
+  );
+
   useEffect(() => {
-    if (!product) return;
+    return () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+        objectUrlRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!product) {
+      setPreviewUrl(undefined);
+      return;
+    }
     const initialPercent = calcPercentFromPrices(product.price, product.discountPrice);
     form.reset({
       ...product,
       discountPercent: initialPercent,
       categoryId: category.id,
     });
+    setPreviewUrl(buildProductImageUrl(product.image));
   }, [product, category.id, form]);
 
   useEffect(() => {
@@ -65,158 +136,161 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
   }, [price, discountPercent, setValue]);
 
   const isSubmitting = form.formState.isSubmitting
+  const imageIdError = form.formState.errors?.image?.message;
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({field}) => (
-            <FormItem>
-              <FormLabel>Название</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Введите название продукта"
-                  autoComplete="off"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage/>
-            </FormItem>
-          )}
+    <div className={gridClass}>
+      {isMobile && (
+        <UploadImagePanel
+          uploading={uploading}
+          previewUrl={previewUrl}
+          errorText={imageIdError}
+          onPickFile={handlePickFile}
+          onClear={handleClearImage}
+          disabled={isSubmitting}
         />
-
-        <FormField
-          control={form.control}
-          name="price"
-          render={({field}) => (
-            <FormItem>
-              <FormLabel>Цена</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder=""
-                  type="number"
-                  inputMode="decimal"
-                  min={0}
-                  step="0.01"
-                  autoComplete="off"
-                  value={Number(field.value)}
-                  onChange={(e) => {
-                    const raw = e.target.value;
-                    if (raw === "") {
-                      field.onChange("");
-                      return;
-                    }
-                    const num = Number(raw);
-                    field.onChange(num);
-                  }}
-                />
-              </FormControl>
-              <FormMessage/>
-            </FormItem>
-          )}
+      )}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>Название</FormLabel>
+                <FormControl>
+                  <Input placeholder="Введите название продукта" autoComplete="off" {...field} />
+                </FormControl>
+                <FormMessage/>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="price"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>Цена</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder=""
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    step="0.01"
+                    autoComplete="off"
+                    value={Number(field.value)}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      if (raw === "") {
+                        field.onChange("");
+                        return;
+                      }
+                      const num = Number(raw);
+                      field.onChange(num);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage/>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="discountPercent"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>% скидки</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="0"
+                    type="number"
+                    inputMode="decimal"
+                    min={0}
+                    max={100}
+                    step="0.01"
+                    autoComplete="off"
+                    value={Number(field.value)}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      if (raw === "") {
+                        field.onChange("");
+                        return;
+                      }
+                      const num = Number(raw);
+                      field.onChange(num);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="discountPrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Цена со скидкой</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    readOnly
+                    tabIndex={-1}
+                    value={field.value?.toFixed ? field.value.toFixed(2) : field.value}
+                    className="bg-muted/50 cursor-default"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isPopular"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>Популярный товар</FormLabel>
+                <FormControl>
+                  <Checkbox checked={!!field.value} onCheckedChange={field.onChange} disabled={form.formState.isSubmitting}/>
+                </FormControl>
+                <FormMessage/>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>Описание</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Коротко опишите продукт" rows={6} maxLength={600} className="resize-y" {...field} />
+                </FormControl>
+                <FormMessage/>
+              </FormItem>
+            )}
+          />
+          <CardFooter className="px-0">
+            <DialogClose asChild>
+              <Button variant="outline">Закрыть</Button>
+            </DialogClose>
+            <Button type="submit" className="ml-auto" disabled={isSubmitting}>
+              {isSubmitting ? "Сохраняем…" : (mode === "edit" ? "Сохранить" : "Создать")}
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
+      {!isMobile && (
+        <UploadImagePanel
+          uploading={uploading}
+          previewUrl={previewUrl}
+          errorText={imageIdError}
+          onPickFile={handlePickFile}
+          onClear={handleClearImage}
+          disabled={isSubmitting}
         />
-
-        <FormField
-          control={form.control}
-          name="discountPercent"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>% скидки</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="0"
-                  type="number"
-                  inputMode="decimal"
-                  min={0}
-                  max={100}
-                  step="0.01"
-                  autoComplete="off"
-                  value={Number(field.value)}
-                  onChange={(e) => {
-                    const raw = e.target.value;
-                    if (raw === "") {
-                      field.onChange("");
-                      return;
-                    }
-                    const num = Number(raw);
-                    field.onChange(num);
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="discountPrice"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Цена со скидкой</FormLabel>
-              <FormControl>
-                <Input
-                  type="text"
-                  readOnly
-                  tabIndex={-1}
-                  value={field.value?.toFixed ? field.value.toFixed(2) : field.value}
-                  className="bg-muted/50 cursor-default"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="isPopular"
-          render={({field}) => (
-            <FormItem>
-              <FormLabel>Популярный товар</FormLabel>
-              <FormControl>
-                <Switch
-                  checked={!!field.value}
-                  onCheckedChange={field.onChange}
-                  disabled={form.formState.isSubmitting}
-                />
-              </FormControl>
-              <FormMessage/>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({field}) => (
-            <FormItem>
-              <FormLabel>Описание</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Коротко опишите продукт"
-                  rows={6}
-                  maxLength={600}
-                  className="resize-y"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage/>
-            </FormItem>
-          )}
-        />
-
-        <CardFooter className="px-0">
-          <DialogClose asChild>
-            <Button variant="outline">Закрыть</Button>
-          </DialogClose>
-          <Button type="submit" className="ml-auto" disabled={isSubmitting}>
-            {isSubmitting ? "Сохраняем…" : (mode === "edit" ? "Сохранить" : "Создать")}
-          </Button>
-        </CardFooter>
-      </form>
-    </Form>
+      )}
+    </div>
   )
 }

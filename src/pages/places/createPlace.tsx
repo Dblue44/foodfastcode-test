@@ -34,7 +34,7 @@ export function CreatePlacePage() {
       navigate("/places", { replace: true })
       return
     }
-    const errorMessage = result?.payload?.error || "Неизвестная ошибка"
+    const errorMessage = result.payload?.error || "Неизвестная ошибка"
     toast.error("Ошибка", {
       icon: <AlertCircleIcon />,
       richColors: true,

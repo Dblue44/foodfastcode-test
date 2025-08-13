@@ -68,7 +68,12 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "isPopular",
     header: "Популярный товар",
     cell: ({row}) => {
-      return <TableCellViewer data={row.original.isPopular.toString()}/>
+      return (
+        <Checkbox
+          checked={row.original.isPopular}
+          disabled={true}
+        />
+      )
     },
     enableHiding: true,
   },

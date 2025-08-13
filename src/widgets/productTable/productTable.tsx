@@ -20,18 +20,18 @@ import {Button} from "@shared/ui/button.tsx";
 import type {Product, DialogMode} from "@shared/types";
 
 export function ProductTable({data, category, isProductsLoading}: ProductListProps) {
-  const isMobile = useIsMobile()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<DialogMode>("create")
   const [initialProduct, setInitialProduct] = useState<Product | undefined>(undefined)
-
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   })
+
+  const isMobile = useIsMobile()
+  const title = mode === "create" ? "Добавление товара" : "Изменение товара"
 
   const openCreate = () => {
     setMode("create")
@@ -43,8 +43,6 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
     setInitialProduct(product)
     setOpen(true)
   }
-
-  const title = mode === "create" ? "Добавление товара" : "Изменение товара"
 
   const productTable = useReactTable({
     data,
@@ -64,6 +62,13 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
     meta: useMemo(() => ({ onEdit: openEdit }), []),
   })
 
+  const rowsCount = productTable.getRowModel().rows.length
+  const ROW_H = 30
+  const HEAD_H = 30
+  const MAX_ROWS = 10
+  const enableScroll = rowsCount > MAX_ROWS
+  const maxHeightPx = HEAD_H + ROW_H * MAX_ROWS
+
   useEffect(() => {
     productTable
       .getAllColumns()
@@ -79,22 +84,12 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
 
   const visibleCols = productTable.getVisibleLeafColumns().length;
 
-  const rowsCount = productTable.getRowModel().rows.length
-  const ROW_H = 30
-  const HEAD_H = 30
-  const MAX_ROWS = 10
-  const enableScroll = rowsCount > MAX_ROWS
-  const maxHeightPx = HEAD_H + ROW_H * MAX_ROWS
-
   return (
-    <div className={cn(
-      "w-full flex flex-wrap content-start mb-2 mr-2",
-      !isMobile && "max-w-[1440px]"
-    )}>
+    <div className={cn("w-full flex flex-wrap content-start mb-2 mr-2", !isMobile && "max-w-[1440px]")}>
       <div className="flex items-center gap-2 mb-2">
         <span className="text-2xl font-semibold tracking-tight text-foreground">
           {"Товары"}{category?.name && ` в категории "${category?.name}"`}
-          </span>
+        </span>
       </div>
       <div className="w-full flex items-center mb-2">
         <Input
@@ -112,10 +107,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
         </div>
       </div>
       <div className="w-full rounded-lg border overflow-hidden">
-        <div
-          className={cn("overflow-hidden", enableScroll && "overflow-y-auto")}
-          style={enableScroll ? { maxHeight: maxHeightPx } : undefined}
-        >
+        <div className={cn("overflow-hidden", enableScroll && "overflow-y-auto")} style={enableScroll ? { maxHeight: maxHeightPx } : undefined}>
           <Table className="table-fixed">
             <colgroup>
               <col className="w-12"/>
@@ -130,12 +122,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead key={header.id} className="sticky top-0 z-10">
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
                     )
                   })}
@@ -152,15 +139,15 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
                       const target = e.target as HTMLElement;
                       if (isInteractiveTarget(target)) return;
                       const id = row.original.id;
-                      if (id) {/*navigate(`/place/${id}`)*/}
+                      if (id) {
+                        setInitialProduct(row.original)
+                        setOpen(true)
+                      }
                     }}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -168,19 +155,13 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
               ) : isProductsLoading
                 ?
                 <TableRow>
-                  <TableCell
-                    colSpan={visibleCols}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={visibleCols} className="h-24 text-center">
                     Загрузка...
                   </TableCell>
                 </TableRow>
                 : (
                   <TableRow>
-                    <TableCell
-                      colSpan={visibleCols}
-                      className="h-24 text-center"
-                    >
+                    <TableCell colSpan={visibleCols} className="h-24 text-center">
                       Нет продуктов в выбранной категории
                     </TableCell>
                   </TableRow>
@@ -195,6 +176,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
         title={title}
         mode={mode}
         product={initialProduct}
+        setProduct={setInitialProduct}
         category={category}
       />
     </div>

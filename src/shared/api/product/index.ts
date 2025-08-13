@@ -4,5 +4,6 @@ export {
   createCategoryProduct,
   editProduct,
   deleteProduct,
-  loadProductImage
+  loadProductImage,
+  loadImageApi
 } from './product'

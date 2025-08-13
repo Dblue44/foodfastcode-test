@@ -5,6 +5,7 @@ import {Badge} from "@shared/ui/badge.tsx";
 import type {BasePlace} from "@shared/types";
 import {CheckCircle2Icon, Clock, Drill} from "lucide-react";
 import {PlaceActionsCell} from "widgets/placeList";
+import React from "react";
 
 export const placeStatuses = ["Работает", "Приостановлено", "Технические работы"]
 

@@ -217,6 +217,38 @@ export class ApiBaseInstance {
     return response.data
   }
 
+  async postRaw<T>(
+    endpoint: string,
+    json: string,
+    options: AxiosRequestConfig = {}
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axios.post(
+      endpoint,
+      json,
+      options
+    )
+    if (axios.isAxiosError(response)) {
+      return Promise.reject(response)
+    }
+    return response.data
+  }
+
+  async putRaw<T>(
+    endpoint: string,
+    json: string,
+    options: AxiosRequestConfig = {}
+  ): Promise<T> {
+    const response: AxiosResponse<T> = await this.axios.put(
+      endpoint,
+      json,
+      options
+    )
+    if (axios.isAxiosError(response)) {
+      return Promise.reject(response)
+    }
+    return response.data
+  }
+
   async put<T>(
     endpoint: string,
     formData: FormData,
@@ -232,6 +264,7 @@ export class ApiBaseInstance {
     }
     return response.data
   }
+
 
   async delete<T>(
     endpoint: string,

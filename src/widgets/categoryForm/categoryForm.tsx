@@ -35,7 +35,7 @@ export function CategoryForm({category, setOpen, open, title, mode}: CategoryFor
       const data = { id: category.id, name: values.name }
       const result = await dispatch(editUserPlaceCategory(data))
       if (editUserPlaceCategory.rejected.match?.(result)) {
-        const errorMessage = result?.payload?.error || "Неизвестная ошибка"
+        const errorMessage = result.payload?.error || "Неизвестная ошибка"
         toast.error("Ошибка при изменении категории", {
           icon: <AlertCircleIcon/>,
           richColors: true,
@@ -52,7 +52,7 @@ export function CategoryForm({category, setOpen, open, title, mode}: CategoryFor
     }
     const result = await dispatch(createUserPlaceCategory(values.name))
     if (createUserPlaceCategory.rejected.match?.(result)) {
-      const errorMessage = result?.payload?.error || "Неизвестная ошибка"
+      const errorMessage = result.payload?.error || "Неизвестная ошибка"
       toast.error("Ошибка при создании категории", {
         icon: <AlertCircleIcon/>,
         richColors: true,
