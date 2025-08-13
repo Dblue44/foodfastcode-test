@@ -11,21 +11,22 @@ import {
 import {Avatar, AvatarFallback, AvatarImage} from "@shared/ui/avatar";
 import {LogOut, UserPen} from "lucide-react";
 import {logout, selectUserBase} from "@entities/user";
-import type {IUserState} from "@shared/types";
+import type {UserStore} from "@shared/types";
 import {useAppDispatch, useAppSelector} from "@shared/lib";
 import {Skeleton} from "@shared/ui/skeleton.tsx";
 
 export function NavUser({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-  const user: IUserState = useAppSelector(selectUserBase)
+  const store: UserStore = useAppSelector(selectUserBase)
+  const user = store.user
   const dispatch = useAppDispatch()
   const { isMobile } = useSidebar()
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        {user.id && user.avatarUrl && user.name
+        {user?.id && user?.avatarUrl && user?.name
           ?
           <DropdownMenu {...props}>
             <DropdownMenuTrigger asChild>

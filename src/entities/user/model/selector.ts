@@ -1,17 +1,17 @@
 import {createSelector} from "@reduxjs/toolkit";
-import type {IUserState} from "@shared/types";
+import type {UserStore} from "@shared/types";
 
 export const selectUserBase = createSelector(
   (state: RootState) => state,
   (state) => state.user
 )
 
-export const selectPageName = createSelector(
+export const selectCrumbs = createSelector(
   selectUserBase,
-  (state: IUserState) => state.currentPage
+  (state: UserStore) => state.crumbs
 )
 
 export const selectAccessToken = createSelector(
   selectUserBase,
-  (state: IUserState) => state.accessToken
+  (state: UserStore) => state.accessToken
 )

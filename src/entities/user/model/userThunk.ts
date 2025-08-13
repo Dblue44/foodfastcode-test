@@ -7,7 +7,7 @@ import type {
   UserAccessCodeData,
   ErrorLineType, UserStateResponse
 } from "@shared/types";
-import {sendCodeRequest, checkCodeRequest, getUserRequest } from "@shared/api/user";
+import {sendCodeRequest, checkCodeRequest, getUserRequest} from "@shared/api/user";
 
 
 export const sendCode = createAsyncThunk<

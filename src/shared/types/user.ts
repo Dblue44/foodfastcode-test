@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {crumbSchema} from "@shared/types/common.ts";
 
 export const userStateSchema = z.object({
   id: z.string().nullable(),
@@ -19,14 +20,15 @@ export const userStateResponseSchema = z.object({
 
 export type UserStateResponse = z.infer<typeof userStateResponseSchema>
 
-export const iUserStateSchema = userStateSchema.extend({
+export const userStoreSchema = z.object({
+  user: userStateSchema.nullable(),
   accessToken: z.string().nullable(),
   error: z.string().optional().nullable(),
   authClosed: z.boolean(),
-  currentPage: z.string(),
+  crumbs: z.array(crumbSchema).default([]),
 })
 
-export type IUserState = z.infer<typeof iUserStateSchema>
+export type UserStore = z.infer<typeof userStoreSchema>
 
 export const phoneFormSchema = z.object({
   phone: z
@@ -40,7 +42,7 @@ export const phoneFormSchema = z.object({
 export type PhoneForm = z.infer<typeof phoneFormSchema>;
 
 export const otpFormSchema = z.object({
-  code: z.string().min(4, {
+  code: z.string().min(6, {
     message: "Заполните все ячейки",
   }),
 })

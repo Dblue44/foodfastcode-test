@@ -1,78 +1,54 @@
-import {type Crumb, type IBasePlace,} from "@shared/types";
+import type { Place, Crumb } from "@shared/types";
 
-export function resolveCrumbs(pathname: string, placesList: IBasePlace[], pageName?: string): Crumb[] {
-  const path = pathname.replace(/\/+$/, "") || "/"
+/**
+ * Строит крошки по текущему пути.
+ *
+ * Корни:
+ *  - /home        → ["Главная"]
+ *  - /settings    → ["Настройки"]
+ *  - /places      → ["Заведения"]
+ *  - /create-place→ ["Заведения" → "Добавление заведения"]
+ *  - /place/:id   → ["Заведения" → "{place.name}"]
+ */
+export function resolveCrumbs(
+  pathname: string,
+  places: Place[] = [],
+  pageName?: string | null
+): Crumb[] {
+  // HOME
+  if (pathname === "/home") {
+    return [{ label: "Главная", to: null }];
+  }
 
-  // /auth
-  if (path === "/auth") return [{label: "Авторизация", to: null}]
+  // SETTINGS (на будущее — если добавишь роут /settings)
+  if (pathname === "/settings") {
+    return [{ label: "Настройки", to: null }];
+  }
 
-  // /home
-  if (path === "/home") return [{label: "Главная", to: null}]
+  // PLACES ROOT
+  if (pathname === "/places") {
+    return [{ label: "Заведения", to: null }];
+  }
 
-  // /places
-  if (path === "/places") return [{label: "Заведения", to: null}]
-
-  // /create-place
-  if (path === "/create-place") {
+  // CREATE PLACE
+  if (pathname === "/create-place") {
     return [
-      {label: "Заведения", to: "/places"},
-      {label: "Новое заведение", to: null},
-    ]
+      { label: "Заведения", to: "/places" },
+      { label: "Добавление заведения", to: null },
+    ];
   }
 
-  // /place/:id
-  {
-    const m = /^\/place\/([^/]+)$/.exec(path)
-    if (m) {
-      const placeId = m[1]
-      const place = safeFindPlace(placeId, placesList)
-      const label = place?.name || pageName || "Редактирование"
-
-      return [
-        {label: "Заведения", to: "/places"},
-        {label, to: null}, // текущая страница
-      ]
-    }
+  // EDIT PLACE: /place/:id
+  const match = pathname.match(/^\/place\/([^/]+)$/);
+  if (match) {
+    const id = String(match[1]);
+    const place = places.find((p) => String(p.id) === id);
+    const label = place?.name ?? pageName ?? "Заведение";
+    return [
+      { label: "Заведения", to: "/places" },
+      { label, to: null },
+    ];
   }
 
-  // /:placeId/categories (на будущее)
-  {
-    const m = /^\/([^/]+)\/categories$/.exec(path)
-    if (m) {
-      const placeId = m[1]
-      const place = safeFindPlace(placeId, placesList)
-      const placeLabel = place?.name || "Заведение"
-
-      return [
-        {label: "Заведения", to: "/places"},
-        {label: placeLabel, to: `/place/${placeId}`},
-        {label: "Категории", to: null},
-      ]
-    }
-  }
-
-  // /category/:categoryId (на будущее)
-  {
-    const m = /^\/category\/([^/]+)$/.exec(path)
-    if (m) {
-      const categoryId = m[1]
-      // TODO: когда появится стор категорий — подставить имя:
-      const categoryLabel = pageName || `Категория ${categoryId}`
-
-      return [
-        {label: "Заведения", to: "/places"},
-        {label: categoryLabel, to: null},
-      ]
-    }
-  }
-
-  return pageName ? [{label: pageName, to: null}] : []
-}
-
-function safeFindPlace(id: string | number, placesList: IBasePlace[]) {
-  try {
-    return placesList.find(p => String(p.id) === String(id))
-  } catch {
-    return undefined
-  }
+  return [];
 }

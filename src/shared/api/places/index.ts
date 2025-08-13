@@ -1,1 +1,0 @@
-export {getPlaces, createPlace, removePlace, editPlace} from './places'

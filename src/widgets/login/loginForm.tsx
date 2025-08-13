@@ -116,7 +116,7 @@ export function LoginForm({
                       )}
                     </div>
                     <FormControl>
-                      <InputOTP maxLength={4} {...field}>
+                      <InputOTP maxLength={6} {...field}>
                         <InputOTPGroup>
                           <InputOTPSlot index={0} />
                           <InputOTPSlot index={1} />

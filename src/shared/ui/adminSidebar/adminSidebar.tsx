@@ -14,7 +14,7 @@ import {
 import {Gauge, MapPinHouse, SquareMenu} from 'lucide-react';
 import {Link} from "react-router-dom";
 import {NavUser} from "@widgets/navUser";
-import {Search} from "@widgets/search";
+import {SearchPlace} from "@widgets/search";
 import {Button} from "@shared/ui/button.tsx";
 
 const menuList = [
@@ -44,7 +44,7 @@ export function AdminSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className="ml-2 pt-4 [&>div[data-sidebar='sidebar']]:!bg-background" {...props}>
+    <Sidebar className="ml-2 pt-4 !border-0 [&>div[data-sidebar='sidebar']]:!bg-background" {...props}>
       <SidebarHeader className="space-y-2 p-2">
         <Button variant="ghost" className="w-full mb-4 h-16">
           <Link className="flex items-center gap-4" to="/home">
@@ -52,7 +52,7 @@ export function AdminSidebar({
             <span className="pl-2 scroll-m-20 text-xl font-semibold tracking-tight">FastFoodCode</span>
           </Link>
         </Button>
-        <Search/>
+        <SearchPlace/>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

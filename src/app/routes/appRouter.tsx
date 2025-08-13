@@ -31,7 +31,7 @@ export const AppRouter = () => {
           <Route path="/home" element={<HomePage />} />
           <Route path="/places" element={<PlacesPage />} />
           <Route path="/create-place" element={<CreatePlacePage />} />
-          <Route path='place/:id' element={<EditPlacePage />} />
+          <Route path='/place/:id' element={<EditPlacePage />} />
         </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />

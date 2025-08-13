@@ -1,0 +1,1 @@
+export {fetchPlaces, createPlace, deletePlace, editPlace} from './place'

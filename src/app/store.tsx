@@ -11,12 +11,17 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import {userReducer} from "@entities/user";
-import {placesReducer} from "@entities/places";
+import {placesReducer} from "@entities/place";
 import {authErrorListener} from "@app/middlewares";
+import {categoryReducer} from "@entities/category";
+import {productReducer} from "@entities/product";
+import {categoryFlowListener} from "@app/middlewares/categoryFlowMiddleware.tsx";
 
 const rootReducer = combineReducers({
   user: userReducer,
-  places: placesReducer
+  places: placesReducer,
+  category: categoryReducer,
+  product: productReducer
 })
 
 const persistConfig = {
@@ -41,7 +46,7 @@ const store = configureStore({
           REGISTER,
         ],
       },
-    }).concat(authErrorListener.middleware),
+    }).concat(authErrorListener.middleware, categoryFlowListener.middleware),
 })
 
 export const persistor = persistStore(store)

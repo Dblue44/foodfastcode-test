@@ -1,18 +1,16 @@
 import {LoginForm} from "@widgets/login"
-import {useEffect, useState} from "react"
+import {useState} from "react"
 import {useMask} from "@react-input/mask"
 import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
 import type {LoginOtp, OtpForm, PhoneForm} from "@shared/types"
 import {otpFormSchema, phoneFormSchema} from "@shared/types"
-import {useAppDispatch, useAppSelector} from "@shared/lib"
+import {useAppDispatch} from "@shared/lib"
 import {checkCode, getUser, sendCode} from "@entities/user"
 import { toast } from "sonner"
 import {AlertCircleIcon} from "lucide-react";
 import {Toaster} from "@shared/ui/sonner";
 import {useNavigate} from "react-router-dom";
-import {selectAuthError} from "@entities/places/model/selector.ts";
-import {resetAuthError} from "@entities/places";
 
 export const AuthPage = () => {
   const [stage, setStage] = useState<"phone" | "otp">("phone")
@@ -21,18 +19,6 @@ export const AuthPage = () => {
   const [showForm, setShowForm] = useState(true)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const isAuthError = useAppSelector(selectAuthError)
-
-  useEffect(() => {
-    if (isAuthError) {
-      toast.info("Ваша сессия истекла", {
-        icon: <AlertCircleIcon />,
-        richColors: true,
-        description: "Авторизуйтесь вновь",
-      });
-      dispatch(resetAuthError())
-    }
-  }, [dispatch, isAuthError])
 
   const phoneForm = useForm<PhoneForm>({
     resolver: zodResolver(phoneFormSchema),

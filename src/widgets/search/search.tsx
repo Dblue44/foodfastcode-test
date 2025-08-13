@@ -2,14 +2,14 @@ import {useMemo, useState} from "react";
 import {ChevronDown} from "lucide-react";
 import {ScrollArea} from "@shared/ui/scroll-area";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@shared/ui/dropdown-menu.tsx";
-import type {IPlace} from "@shared/types";
-import {selectPlacesList} from "@entities/places";
+import type {Place} from "@shared/types";
+import {selectPlacesList} from "@entities/place";
 import {useAppSelector} from "@shared/lib";
 import {CreatePlaceButton} from "@shared/ui/createPlaceButton/createPlaceButton.tsx";
 
-export function Search() {
+export function SearchPlace() {
   const places = useAppSelector(selectPlacesList)
-  const [selectedPlace, setSelectedPlace] = useState<IPlace | null>(null)
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null)
   const [query, setQuery] = useState("")
 
   const filtered = useMemo(
@@ -50,7 +50,7 @@ export function Search() {
           />
         </div>
 
-        <ScrollArea className="max-h-80 mb-2">
+        <ScrollArea className="max-h-80 mb-2 ml-2 mr-2">
           {filtered?.length > 0 ? (
             filtered.map((place) => (
               <DropdownMenuItem

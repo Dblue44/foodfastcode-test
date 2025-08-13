@@ -1,30 +1,44 @@
 import {z} from "zod";
+import {apiDataSchema} from "@shared/types";
 
-export const placeSchema = z.object({
+export const basePlaceSchema = z.object({
   id: z.string(),
   name: z.string(),
   address: z.string(),
   status: z.string().default("Работает").optional(),
 })
 
-export type IBasePlace = z.infer<typeof placeSchema>
+export type BasePlace = z.infer<typeof basePlaceSchema>
 
-export const storePlaceSchema = placeSchema.extend({
+export const storePlaceSchema = basePlaceSchema.extend({
   token: z.string(),
 })
 
-export type IPlace = z.infer<typeof storePlaceSchema>
+export type Place = z.infer<typeof storePlaceSchema>
 
 export const placesStateSchema = z.object({
   placesList: z.array(storePlaceSchema).default([]),
   loadingPlaces: z.boolean().default(false),
-  isAuthError: z.boolean().default(false).optional(),
 })
 
-export type IPlacesState = z.infer<typeof placesStateSchema>
+export type PlacesState = z.infer<typeof placesStateSchema>
 
-export const placesResponseSchema = z.object({
-  data: z.array(storePlaceSchema)
+export const fetchPlacesResponseSchema = apiDataSchema(z.array(storePlaceSchema))
+export type FetchPlacesResponse = z.infer<typeof fetchPlacesResponseSchema>
+
+export const createPlaceResponseSchema = apiDataSchema(storePlaceSchema)
+export type CreatePlaceResponse = z.infer<typeof createPlaceResponseSchema>
+
+export const updatePlaceResponseSchema = apiDataSchema(storePlaceSchema)
+export type UpdatePlaceResponse = z.infer<typeof updatePlaceResponseSchema>
+
+export const deletePlaceResponseSchema = apiDataSchema(z.boolean())
+export type DeletePlaceResponse = z.infer<typeof deletePlaceResponseSchema>
+
+export const createPlaceFormSchema = z.object({
+  name: z.string().min(1),
+  address: z.string().min(1),
+  token: z.string().min(40),
 })
 
-export type PlacesResponse = z.infer<typeof placesResponseSchema>
+export type CreatePlaceForm = z.infer<typeof createPlaceFormSchema>

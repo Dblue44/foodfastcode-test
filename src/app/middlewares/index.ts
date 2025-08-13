@@ -1,1 +1,1 @@
-export {authErrorListener} from './authErrorMiddleware'
+export {authErrorListener} from './authErrorMiddleware.tsx'

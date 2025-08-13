@@ -1,27 +1,28 @@
-import {PlacesList, PlacesListSkeleton} from "@widgets/placesList";
+import {PlaceList, PlaceListSkeleton} from "widgets/placeList";
 import {useAppDispatch, useAppSelector} from "@shared/lib";
-import {getUserPlaces, clearPlaces, selectPlacesBase} from "@entities/places";
+import {fetchUserPlaces, clearPlaces, selectPlacesBase} from "@entities/place";
 import {useEffect} from "react";
-import {setPageName} from "@entities/user";
-import type {IPlacesState} from "@shared/types";
+import { usePageCrumbs } from "@/features";
+import type {PlacesState} from "@shared/types";
 import {Toaster} from "@shared/ui/sonner.tsx";
 
 export function PlacesPage() {
-  const places: IPlacesState = useAppSelector(selectPlacesBase)
+  const places: PlacesState = useAppSelector(selectPlacesBase)
   const dispatch = useAppDispatch()
 
+  usePageCrumbs("Заведения");
+
   useEffect(() => {
-    dispatch(setPageName("Заведения"));
     dispatch(clearPlaces());
-    dispatch(getUserPlaces());
+    dispatch(fetchUserPlaces());
   }, [dispatch])
 
   return (
     <div className="w-full flex items-center justify-center">
       <Toaster position="top-center" richColors />
       {places.loadingPlaces
-        ? <PlacesListSkeleton />
-        : <PlacesList data={places.placesList}/>}
+        ? <PlaceListSkeleton />
+        : <PlaceList data={places.placesList}/>}
     </div>
   )
 }
