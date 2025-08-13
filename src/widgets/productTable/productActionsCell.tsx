@@ -7,20 +7,32 @@ import {
   DropdownMenuTrigger
 } from "@shared/ui/dropdown-menu.tsx";
 import {Button} from "@shared/ui/button.tsx";
-import {EllipsisVertical, Pencil, Trash2} from "lucide-react";
-import {deleteUserProduct} from "@entities/product";
+import {AlertCircleIcon, CheckIcon, EllipsisVertical, Pencil, Trash2} from "lucide-react";
+import {deleteUserProduct, removeProductFromList} from "@entities/product";
 import type {ProductActionsCellProps} from "@widgets/productTable";
+import {toast} from "sonner";
 
 export function ProductActionsCell({ product, onEdit }: ProductActionsCellProps) {
   const dispatch = useAppDispatch();
-  // TODO SELECTOR ВЫБРАННОГО ЗАВЕДЕНИЯ
 
   const handleEdit = () => {
     onEdit?.(product);
   };
 
   const onDelete = async () => {
-    dispatch(deleteUserProduct(product.id))
+    const result = await dispatch(deleteUserProduct(product.id))
+    if (deleteUserProduct.rejected.match(result)) {
+      const errorMessage = result.payload?.error || "Неизвестная ошибка"
+      toast.error("Ошибка при удалении товара", {
+        icon: <AlertCircleIcon/>,
+        richColors: true,
+        description: "Не удалось удалить товар. " + errorMessage,
+      })
+    }
+    if (deleteUserProduct.fulfilled.match(result)) {
+      toast.success("Товар успешно удален", { icon: <CheckIcon /> });
+      dispatch(removeProductFromList(product.id));
+    }
   };
 
   return (

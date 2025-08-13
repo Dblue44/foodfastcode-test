@@ -34,8 +34,11 @@ const productSlice = createSlice({
     stopLoadingProducts: (state) => {
       state.loadingProducts = false
     },
+    removeProductFromList: (state, action) => {
+      state.productsList = [...state.productsList.filter((p) => p.id !== action.payload)]
+    },
     extendProductList: (state, action) => {
-      state.productsList = [...state.productsList, ...action.payload]
+      state.productsList = [...state.productsList, action.payload]
     },
     replaceProductInList: (state, action) => {
       state.productsList = [...state.productsList.filter((p) => p.id !== action.payload.id), action.payload]
@@ -58,5 +61,5 @@ const productSlice = createSlice({
   }
 })
 
-export const {clearProducts, setCategoryId, setProductPlaceId, stopLoadingProducts, resetCategoryChanged, extendProductList, replaceProductInList} = productSlice.actions
+export const {clearProducts, setCategoryId, setProductPlaceId, stopLoadingProducts, resetCategoryChanged, extendProductList, replaceProductInList, removeProductFromList} = productSlice.actions
 export default productSlice.reducer

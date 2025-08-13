@@ -6,7 +6,8 @@ export {
   stopLoadingProducts,
   resetCategoryChanged,
   extendProductList,
-  replaceProductInList
+  replaceProductInList,
+  removeProductFromList
 } from './model/productSlice.ts'
 export {
   fetchUserCategoryProducts,

@@ -1,6 +1,5 @@
 import {cn, useAppDispatch} from "@shared/lib";
 import {type ProductFormType} from "@shared/types";
-import {createUserPlace} from "@entities/place";
 import {toast} from "sonner";
 import {AlertCircleIcon} from "lucide-react";
 import {createUserCategoryProduct, editUserProduct, extendProductList, replaceProductInList} from "@entities/product";
@@ -48,7 +47,7 @@ export function ProductDialog({
       return
     }
     const createResult = await dispatch(createUserCategoryProduct(values))
-    if (createUserPlace.rejected?.match?.(createResult)) {
+    if (createUserCategoryProduct.rejected?.match?.(createResult)) {
       const errorMessage = createResult.payload?.error || "Неизвестная ошибка"
       toast.error("Ошибка", {
         icon: <AlertCircleIcon/>,
@@ -56,7 +55,7 @@ export function ProductDialog({
         description: "Не удалось добавить продукт. " + errorMessage,
       })
     }
-    if (createUserPlace.fulfilled.match(createResult)) {
+    if (createUserCategoryProduct.fulfilled.match(createResult)) {
       dispatch(extendProductList(createResult.payload.data))
     }
     setProduct(undefined);

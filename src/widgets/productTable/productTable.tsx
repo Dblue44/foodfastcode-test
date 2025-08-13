@@ -18,6 +18,9 @@ import {ProductDialog} from "@widgets/productDialog";
 import {cn} from "@shared/lib";
 import {Button} from "@shared/ui/button.tsx";
 import type {Product, DialogMode} from "@shared/types";
+import {Label} from "@shared/ui/label.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@shared/ui/select.tsx";
+import {ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon} from "lucide-react";
 
 export function ProductTable({data, category, isProductsLoading}: ProductListProps) {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -168,6 +171,79 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
                 )}
             </TableBody>
           </Table>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mt-2 px-4">
+        <div className="hidden flex-1 text-sm text-muted-foreground  mr-25 lg:flex">
+          {productTable.getFilteredSelectedRowModel().rows.length} из {productTable.getFilteredRowModel().rows.length} товаров выбрано
+        </div>
+        <div className="flex w-full items-center gap-8 lg:w-fit">
+          <div className="hidden items-center gap-2 lg:flex">
+            <Label htmlFor="rows-per-page" className="text-sm font-medium">
+              Количество на странице
+            </Label>
+            <Select
+              value={`${productTable.getState().pagination.pageSize}`}
+              onValueChange={(value) => {
+                productTable.setPageSize(Number(value))
+              }}
+            >
+              <SelectTrigger className="w-20" id="rows-per-page">
+                <SelectValue placeholder={productTable.getState().pagination.pageSize}/>
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[10, 20, 30].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex w-fit items-center justify-center text-sm font-medium">
+            Страница {productTable.getState().pagination.pageIndex + 1} из {productTable.getPageCount()}
+          </div>
+          <div className="ml-auto flex items-center gap-2 lg:ml-0">
+            <Button
+              variant="outline"
+              className="hidden h-8 w-8 p-0 lg:flex"
+              onClick={() => productTable.setPageIndex(0)}
+              disabled={!productTable.getCanPreviousPage()}
+            >
+              <span className="sr-only">В начало</span>
+              <ChevronsLeftIcon/>
+            </Button>
+            <Button
+              variant="outline"
+              className="size-8"
+              size="icon"
+              onClick={() => productTable.previousPage()}
+              disabled={!productTable.getCanPreviousPage()}
+            >
+              <span className="sr-only">Предыдущая страница</span>
+              <ChevronLeftIcon/>
+            </Button>
+            <Button
+              variant="outline"
+              className="size-8"
+              size="icon"
+              onClick={() => productTable.nextPage()}
+              disabled={!productTable.getCanNextPage()}
+            >
+              <span className="sr-only">Следующая страница</span>
+              <ChevronRightIcon/>
+            </Button>
+            <Button
+              variant="outline"
+              className="hidden size-8 lg:flex"
+              size="icon"
+              onClick={() => productTable.setPageIndex(productTable.getPageCount() - 1)}
+              disabled={!productTable.getCanNextPage()}
+            >
+              <span className="sr-only">Перейти в конец</span>
+              <ChevronsRightIcon/>
+            </Button>
+          </div>
         </div>
       </div>
       <ProductDialog
