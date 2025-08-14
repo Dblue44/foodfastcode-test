@@ -2,14 +2,14 @@ import {useMemo, useState} from "react";
 import {ChevronDown} from "lucide-react";
 import {ScrollArea} from "@shared/ui/scroll-area";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@shared/ui/dropdown-menu.tsx";
-import type {Place} from "@shared/types";
-import {selectPlacesList} from "@entities/place";
-import {useAppSelector} from "@shared/lib";
+import {selectPlacesList, selectCurrentPlace, setCurrentPlace} from "@entities/place";
+import {useAppDispatch, useAppSelector} from "@shared/lib";
 import {CreatePlaceButton} from "@shared/ui/createPlaceButton/createPlaceButton.tsx";
 
 export function SearchPlace() {
+  const dispatch = useAppDispatch()
   const places = useAppSelector(selectPlacesList)
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null)
+  const selectedPlace = useAppSelector(selectCurrentPlace)
   const [query, setQuery] = useState("")
 
   const filtered = useMemo(
@@ -56,7 +56,7 @@ export function SearchPlace() {
               <DropdownMenuItem
                 key={place.id}
                 onSelect={() => {
-                  setSelectedPlace(place)
+                  dispatch(setCurrentPlace(place))
                 }}
                 className="cursor-pointer"
               >

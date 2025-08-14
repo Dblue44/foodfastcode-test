@@ -18,6 +18,7 @@ export type Place = z.infer<typeof storePlaceSchema>
 
 export const placesStateSchema = z.object({
   placesList: z.array(storePlaceSchema).default([]),
+  selectedPlace: storePlaceSchema.optional(),
   loadingPlaces: z.boolean().default(false),
 })
 

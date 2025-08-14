@@ -4,6 +4,7 @@ import {fetchUserPlaces} from "@entities/place";
 
 const initialState: PlacesState = {
   placesList: [],
+  selectedPlace: undefined,
   loadingPlaces: false,
 }
 
@@ -13,6 +14,9 @@ const placeSlice = createSlice({
   reducers: {
     clearPlaces: (state) => {
       state.placesList = []
+    },
+    setCurrentPlace: (state, action) => {
+      state.selectedPlace = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -32,5 +36,5 @@ const placeSlice = createSlice({
   }
 })
 
-export const {clearPlaces} = placeSlice.actions
+export const {clearPlaces, setCurrentPlace} = placeSlice.actions
 export default placeSlice.reducer

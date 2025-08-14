@@ -10,3 +10,8 @@ export const selectPlacesList = createSelector(
   selectPlacesBase,
   (state: PlacesState) => state.placesList ?? []
 )
+
+export const selectCurrentPlace = createSelector(
+  selectPlacesBase,
+  (state: PlacesState) => state.selectedPlace
+)

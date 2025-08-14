@@ -16,33 +16,34 @@ import {Link} from "react-router-dom";
 import {NavUser} from "@widgets/navUser";
 import {SearchPlace} from "@widgets/search";
 import {Button} from "@shared/ui/button.tsx";
+import {useAppSelector} from "@shared/lib";
+import {selectCurrentPlace} from "@entities/place";
 
-const menuList = [
+const baseMenu = [
   {
-    title: "Image",
-    items: [
-      {
-        title: "Дашборды",
-        url: "/home",
-        icon: Gauge,
-      },
-      {
-        title: "Заведения",
-        url: "/places",
-        icon: MapPinHouse,
-      },
-      {
-        title: "Меню",
-        url: "/menu",
-        icon: SquareMenu,
-      }
-    ]
+    title: "Дашборды",
+    url: "/home",
+    icon: Gauge,
   },
-]
+  {
+    title: "Заведения",
+    url: "/places",
+    icon: MapPinHouse,
+  },
+  {
+    title: "Меню",
+    url: "/",
+    icon: SquareMenu,
+  },
+] as const
 
 export function AdminSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const currentPlace = useAppSelector(selectCurrentPlace)
+  const menuHref = currentPlace ? `/place/${currentPlace.id}` : "/places"
+  const isMenuDisabled = !currentPlace
+
   return (
     <Sidebar className="ml-2 pt-4 !border-0 [&>div[data-sidebar='sidebar']]:!bg-background" {...props}>
       <SidebarHeader className="space-y-2 p-2">
@@ -57,21 +58,34 @@ export function AdminSidebar({
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent className="flex flex-col gap-2">
-          <SidebarGroupLabel className="text-lg">Меню</SidebarGroupLabel>
-          {menuList.map((menu) => (
-            <SidebarMenu key={menu.title}>
-              {menu.items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.url}>
-                      <item.icon/>
-                      <span className="text-base">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+          <SidebarGroupLabel className="text-lg">Разделы</SidebarGroupLabel>
+            <SidebarMenu>
+              {baseMenu.map((item) => {
+                const href =
+                  item.title === "Меню" ? menuHref : item.url
+                const disabled =
+                  item.title === "Меню" ? isMenuDisabled : false
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild aria-disabled={disabled}>
+                      <Link
+                        to={href}
+                        className={disabled ? "pointer-events-none opacity-50" : ""}
+                        title={
+                          item.title === "Меню" && disabled
+                            ? "Сначала выберите заведение"
+                            : undefined
+                        }
+                      >
+                        <item.icon />
+                        <span className="text-base">{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              })}
             </SidebarMenu>
-          ))}
         </SidebarGroupContent>
       </SidebarGroup>
       </SidebarContent>
