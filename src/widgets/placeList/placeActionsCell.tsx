@@ -31,7 +31,7 @@ export function PlaceActionsCell({ place }: { place: BasePlace }) {
       <DropdownMenuTrigger asChild>
         <Button
           variant="default"
-          className="data-[state=open]:bg-muted text-muted-foreground flex size-8 ml-auto mr-4"
+          className="bg-muted data-[state=open]:bg-muted text-muted-foreground flex size-8 ml-auto mr-4"
           size="icon"
         >
           <EllipsisVertical />

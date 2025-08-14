@@ -44,13 +44,13 @@ export function CategoryActionsCell({category, onEdit}: CategoryActionsCellProps
         <DropdownMenuTrigger asChild>
           {deleting
             ?
-            <div className="data-[state=open]:bg-muted text-muted-foreground flex items-center size-8 ml-auto mr-4">
+            <div className="flex items-center size-[30px] ml-auto mr-4">
               <LoaderCircle className="animate-spin" size={28} />
             </div>
             :
             <Button
               variant="default"
-              className="data-[state=open]:bg-muted text-muted-foreground flex size-8 ml-auto mr-4"
+              className="bg-muted data-[state=open]:bg-muted text-muted-foreground flex size-8 ml-auto mr-4"
               size="icon"
               onClick={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}

@@ -38,6 +38,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
 
   const openCreate = () => {
     setMode("create")
+    setInitialProduct(undefined)
     setOpen(true)
   }
 

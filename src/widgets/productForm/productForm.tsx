@@ -151,6 +151,7 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
     if (!product) {
       setPreviewUrl(undefined);
       setUploading(false);
+      form.reset();
       return;
     }
     const initialPercent = calcPercentFromPrices(product.price, product.discountPrice);
