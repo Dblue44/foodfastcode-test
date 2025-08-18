@@ -117,17 +117,43 @@ export function LoginForm({
                     </div>
                     <FormControl>
                       <div className="flex justify-center">
-                        <InputOTP maxLength={6} {...field}>
+                        <InputOTP
+                          maxLength={6}
+                          {...field}
+                          onChange={(val) => {
+                            field.onChange(val);
+                            if (val.length === 6) {
+                              (document.activeElement as HTMLElement)?.blur();
+                              otpForm.handleSubmit(onOtpSubmit)();
+                            }
+                          }}
+                        >
                           <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
+                            {[0, 1, 2].map((i) => (
+                              <InputOTPSlot
+                                key={i}
+                                index={i}
+                                className={cn(
+                                  "transition-colors",
+                                  isSubmitting &&
+                                  "border-green-300 animate-pulse text-white"
+                                )}
+                              />
+                            ))}
                           </InputOTPGroup>
                           <InputOTPSeparator />
                           <InputOTPGroup>
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
+                            {[3, 4, 5].map((i) => (
+                              <InputOTPSlot
+                                key={i}
+                                index={i}
+                                className={cn(
+                                  "transition-colors",
+                                  isSubmitting &&
+                                  "border-green-300 animate-pulse text-white"
+                                )}
+                              />
+                            ))}
                           </InputOTPGroup>
                         </InputOTP>
                       </div>

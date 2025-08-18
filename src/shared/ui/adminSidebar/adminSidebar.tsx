@@ -18,6 +18,7 @@ import {SearchPlace} from "@widgets/search";
 import {Button} from "@shared/ui/button.tsx";
 import {useAppSelector} from "@shared/lib";
 import {selectCurrentPlace} from "@entities/place";
+import SplitText from "../reactBits/TextAnimations/SplitText/SplitText.tsx";
 
 const baseMenu = [
   {
@@ -55,7 +56,7 @@ export function AdminSidebar({
         <Button variant="ghost" className="w-full mb-4 h-16">
           <Link className="flex items-center gap-4" to="/home">
             <img src="/ffc.png" alt="FastFoodCode" className="w-16 h-16"/>
-            <span className="pl-2 scroll-m-20 text-xl font-semibold tracking-tight">FastFoodCode</span>
+            <span className="scroll-m-20 text-xl font-semibold tracking-tight"><SplitText text="FastFoodCode" delay={40}/></span>
           </Link>
         </Button>
         <SearchPlace/>
