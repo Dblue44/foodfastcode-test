@@ -5,6 +5,8 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {selectPlacesList, selectCurrentPlace, setCurrentPlace} from "@entities/place";
 import {useAppDispatch, useAppSelector} from "@shared/lib";
 import {CreatePlaceButton} from "@shared/ui/createPlaceButton/createPlaceButton.tsx";
+import {fetchUserPlaceClients, setClientPlace} from "@entities/client";
+import type {BasePlace, Place} from "@shared/types";
 
 export function SearchPlace() {
   const dispatch = useAppDispatch()
@@ -19,6 +21,13 @@ export function SearchPlace() {
         ),
     [places, query]
   )
+
+  const selectPlaceHandler = (place: Place) => {
+    const { ...basePlace }: BasePlace = place;
+    dispatch(setCurrentPlace(place))
+    dispatch(setClientPlace(basePlace))
+    dispatch(fetchUserPlaceClients())
+  }
 
   return (
     <DropdownMenu modal={false}>
@@ -55,9 +64,7 @@ export function SearchPlace() {
             filtered.map((place) => (
               <DropdownMenuItem
                 key={place.id}
-                onSelect={() => {
-                  dispatch(setCurrentPlace(place))
-                }}
+                onSelect={() => selectPlaceHandler(place)}
                 className="cursor-pointer"
               >
                 {place.name}

@@ -35,6 +35,11 @@ const baseMenu = [
     url: "/",
     icon: SquareMenu,
   },
+  {
+    title: "Клиенты",
+    url: "/clients",
+    icon: SquareMenu,
+  },
 ] as const
 
 export function AdminSidebar({
@@ -61,10 +66,8 @@ export function AdminSidebar({
           <SidebarGroupLabel className="text-lg">Разделы</SidebarGroupLabel>
             <SidebarMenu>
               {baseMenu.map((item) => {
-                const href =
-                  item.title === "Меню" ? menuHref : item.url
-                const disabled =
-                  item.title === "Меню" ? isMenuDisabled : false
+                const href = item.title === "Меню" ? menuHref : item.url
+                const disabled = item.title === "Меню" || item.title === "Клиенты" ? isMenuDisabled : false
 
                 return (
                   <SidebarMenuItem key={item.title}>

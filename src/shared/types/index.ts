@@ -91,3 +91,13 @@ export {
   productStoreSchema,
   productFormSchema
 } from './product'
+export type {
+  Client,
+  ClientStore,
+  FetchPlaceClientsResponse
+} from './client'
+export {
+  clientSchema,
+  clientStoreSchema,
+  fetchPlaceClientsResponseSchema
+} from './client'

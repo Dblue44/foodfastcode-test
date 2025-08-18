@@ -15,13 +15,15 @@ import {placesReducer} from "@entities/place";
 import {authErrorListener} from "@app/middlewares";
 import {categoryReducer} from "@entities/category";
 import {productReducer} from "@entities/product";
+import {clientReducer} from "@entities/client";
 import {categoryFlowListener} from "@app/middlewares/categoryFlowMiddleware.tsx";
 
 const rootReducer = combineReducers({
   user: userReducer,
   places: placesReducer,
   category: categoryReducer,
-  product: productReducer
+  product: productReducer,
+  client: clientReducer
 })
 
 const persistConfig = {

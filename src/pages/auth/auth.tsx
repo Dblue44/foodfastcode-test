@@ -11,6 +11,7 @@ import { toast } from "sonner"
 import {AlertCircleIcon} from "lucide-react";
 import {Toaster} from "@shared/ui/sonner";
 import {useNavigate} from "react-router-dom";
+import {setCurrentPlace} from "@entities/place";
 
 export const AuthPage = () => {
   const [stage, setStage] = useState<"phone" | "otp">("phone")
@@ -79,6 +80,7 @@ export const AuthPage = () => {
       if (checkCode.fulfilled.match(result)) {
         setShowForm(false);
         await dispatch(getUser())
+        dispatch(setCurrentPlace(undefined))
         navigate("/home")
       }
     } finally {
