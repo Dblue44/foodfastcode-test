@@ -1,5 +1,5 @@
 import {LoginForm} from "@widgets/login"
-import {useEffect, useRef, useState} from "react"
+import {useState} from "react"
 import {useMask} from "@react-input/mask"
 import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
@@ -11,7 +11,7 @@ import { toast } from "sonner"
 import {AlertCircleIcon} from "lucide-react";
 import {Toaster} from "@shared/ui/sonner";
 import {useNavigate} from "react-router-dom";
-import {setCurrentPlace} from "@entities/place";
+import {fetchUserPlaces, setCurrentPlace} from "@entities/place";
 
 export const AuthPage = () => {
   const [stage, setStage] = useState<"phone" | "otp">("phone")
@@ -20,16 +20,6 @@ export const AuthPage = () => {
   const [showForm, setShowForm] = useState(true)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-
-  const redirectTimerRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    return () => {
-      if (redirectTimerRef.current) {
-        window.clearTimeout(redirectTimerRef.current)
-      }
-    }
-  }, [])
 
   const phoneForm = useForm<PhoneForm>({
     resolver: zodResolver(phoneFormSchema),
@@ -89,6 +79,7 @@ export const AuthPage = () => {
       }
       if (checkCode.fulfilled.match(result)) {
         dispatch(getUser())
+        dispatch(fetchUserPlaces())
         dispatch(setCurrentPlace(undefined))
         dispatch(setShowIntro(true))
         setShowForm(false);

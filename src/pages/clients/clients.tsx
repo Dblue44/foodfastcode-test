@@ -1,12 +1,14 @@
 import {useAppSelector} from "@shared/lib";
 import {selectAllClients} from "@entities/client";
 import {ClientTable} from "@widgets/clientTable";
+import {usePageCrumbs} from "@/features";
 
 export function ClientsPage() {
+  usePageCrumbs("Клиенты");
   const clients = useAppSelector(selectAllClients)
 
   return (
-    <div>
+    <div className="ml-4 mr-4">
       <ClientTable data={clients} />
     </div>
   )

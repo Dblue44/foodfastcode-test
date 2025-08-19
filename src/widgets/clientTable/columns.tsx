@@ -6,7 +6,7 @@ import {Avatar, AvatarFallback, AvatarImage} from "@shared/ui/avatar.tsx";
 
 export const columns: ColumnDef<Client>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "image",
     header: "Изображение",
     cell: ({row}) => {
       return (
@@ -56,7 +56,7 @@ export const columns: ColumnDef<Client>[] = [
     cell: ({row}) => {
       return <TableCellViewer data={row.original.username}/>
     },
-    enableHiding: false,
+    enableHiding: true,
   },
   {
     accessorKey: "phone",

@@ -30,6 +30,11 @@ export function resolveCrumbs(
     return [{ label: "Заведения", to: null }];
   }
 
+  // CLIENTS ROOT
+  if (pathname === "/clients") {
+    return [{ label: "Клиенты", to: null }];
+  }
+
   // CREATE PLACE
   if (pathname === "/create-place") {
     return [
@@ -49,6 +54,7 @@ export function resolveCrumbs(
       { label, to: null },
     ];
   }
+
 
   return [];
 }
