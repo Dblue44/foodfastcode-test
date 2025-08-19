@@ -23,7 +23,7 @@ export const AppRouter = () => {
     <>
       <Route
         path="/"
-        element={<Navigate to="/auth" replace />}
+        element={<Navigate to="/home" replace />}
         errorElement={<Fallback />}
       />
       <Route element={<AuthLayout />} errorElement={<Fallback />}>
