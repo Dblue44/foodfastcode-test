@@ -29,6 +29,7 @@ export {
   crumbResolverSchema,
   breadcrumbsMapSchema,
   apiDataSchema,
+  dialogModeSchema
 } from './common'
 
 export type {

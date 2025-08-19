@@ -7,7 +7,7 @@ import type {
   UpdateCategoryResponse
 } from "@shared/types";
 import {fetchPlaceCategories, createPlaceCategory, editCategory, deleteCategory} from "@shared/api/category";
-import {selectCategoryPlaceId} from "@entities/category";
+import {selectCategoryPlaceId} from "./selector";
 
 export const fetchUserPlaceCategories = createAsyncThunk<
   FetchCategoriesResponse,

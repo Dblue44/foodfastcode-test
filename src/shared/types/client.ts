@@ -1,6 +1,6 @@
 import { z } from "zod"
-import {apiDataSchema} from "@shared/types/common.ts";
-import {basePlaceSchema} from "@shared/types/places.ts";
+import {apiDataSchema} from "./common";
+import {basePlaceSchema} from "./places";
 
 export const clientSchema = z.object({
   id: z.string(),

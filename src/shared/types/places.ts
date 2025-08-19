@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {apiDataSchema} from "@shared/types";
+import {apiDataSchema} from "./common";
 
 export const basePlaceSchema = z.object({
   id: z.string(),

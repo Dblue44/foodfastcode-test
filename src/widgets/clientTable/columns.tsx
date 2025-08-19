@@ -1,7 +1,7 @@
 import type {ColumnDef} from "@tanstack/react-table";
 import type {Client} from "@shared/types";
 import {ArrowDownAZ, ArrowUpAZ} from "lucide-react";
-import {TableCellViewer} from "@widgets/clientTable";
+import {TableCellViewer} from "./tableCellViewer";
 import {Avatar, AvatarFallback, AvatarImage} from "@shared/ui/avatar.tsx";
 
 export const columns: ColumnDef<Client>[] = [

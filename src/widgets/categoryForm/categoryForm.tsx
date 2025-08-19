@@ -16,7 +16,7 @@ import {toast} from "sonner";
 import {AlertCircleIcon, CheckIcon} from "lucide-react";
 import {createUserPlaceCategory, editUserPlaceCategory, extendCategoryList, replaceCategoryInList} from "@entities/category";
 import {useAppDispatch} from "@shared/lib";
-import type {CategoryFormProps} from "@widgets/categoryForm";
+import type {CategoryFormProps} from "./types";
 import {useEffect, useMemo} from "react";
 
 export function CategoryForm({category, setOpen, open, title, mode}: CategoryFormProps) {

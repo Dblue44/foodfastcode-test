@@ -1,6 +1,7 @@
 import type {ColumnDef} from "@tanstack/react-table";
 import type {Category} from "@shared/types";
-import {CategoryActionsCell, type CategoryTableMeta} from "@widgets/categoryList";
+import {type CategoryTableMeta} from "./types";
+import {CategoryActionsCell} from './categoryActionsCell'
 import {ArrowDownAZ, ArrowUpAZ} from "lucide-react";
 
 

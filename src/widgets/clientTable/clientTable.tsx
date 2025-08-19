@@ -7,7 +7,8 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 import {useIsMobile} from "@shared/hooks/use-mobile.ts";
-import {type ClientTableProps, columns} from "@widgets/clientTable";
+import {type ClientTableProps} from "./types";
+import {columns} from './columns';
 import {cn, useAppSelector} from "@shared/lib";
 import {Input} from "@shared/ui/input.tsx";
 import {Button} from "@shared/ui/button.tsx";

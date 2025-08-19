@@ -16,7 +16,7 @@ import {
   loadProductImage,
   loadImageApi
 } from "@shared/api/product";
-import {selectCategoryId, selectProductPlaceId} from "@entities/product";
+import {selectCategoryId, selectProductPlaceId} from "./selector";
 import type {UpdateProductImageResponse} from "@shared/types/product.ts";
 
 export const fetchUserCategoryProducts = createAsyncThunk<

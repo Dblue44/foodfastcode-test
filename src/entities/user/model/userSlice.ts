@@ -1,6 +1,6 @@
 import {createSlice, isPending, isRejected, type PayloadAction} from "@reduxjs/toolkit";
 import type {Crumb, UserStore} from "@shared/types";
-import {sendCode, checkCode, getUser} from "@entities/user/model/userThunk";
+import {sendCode, checkCode, getUser} from "./userThunk";
 
 const initialState: UserStore = {
   user: null,

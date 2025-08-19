@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {crumbSchema} from "@shared/types/common.ts";
+import {crumbSchema} from "./common";
 
 export const userStateSchema = z.object({
   id: z.string().nullable(),

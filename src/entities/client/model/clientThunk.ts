@@ -1,7 +1,7 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import type {ErrorLineType, FetchPlaceClientsResponse, RejectedSsoType} from "@shared/types";
 import {fetchPlaceClients} from "@shared/api/client";
-import {selectClientPlace} from "@entities/client";
+import {selectClientPlace} from "./selector";
 
 export const fetchUserPlaceClients = createAsyncThunk<
   FetchPlaceClientsResponse,

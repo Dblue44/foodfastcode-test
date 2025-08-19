@@ -19,7 +19,8 @@ import {
   clearCategories,
   fetchUserPlaceCategories,
   selectIsCategoriesLoading,
-  selectPlaceCategoriesList, setCategoryPlaceId
+  selectPlaceCategoriesList,
+  setCategoryPlaceId
 } from "@entities/category";
 import {CategoryList} from "@widgets/categoryList";
 import {selectIsProductsLoading} from "@entities/product";

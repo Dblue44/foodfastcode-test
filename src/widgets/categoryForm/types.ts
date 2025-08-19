@@ -1,6 +1,5 @@
 import {z} from "zod";
-import {categorySchema} from "@shared/types";
-import {dialogModeSchema} from "@shared/types/common.ts";
+import {categorySchema, dialogModeSchema} from "@shared/types";
 
 export const categoryFormPropsSchema = z.object({
   open: z.boolean(),

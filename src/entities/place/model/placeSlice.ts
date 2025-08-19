@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import type {PlacesState} from "@shared/types";
-import {fetchUserPlaces} from "@entities/place/model/placeThunk";
+import {fetchUserPlaces} from "./placeThunk";
 
 const initialState: PlacesState = {
   placesList: [],

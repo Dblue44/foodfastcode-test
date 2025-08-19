@@ -11,7 +11,7 @@ import {deleteUserPlaceCategory, removeCategoryFromList} from "@entities/categor
 import {useAppDispatch} from "@shared/lib";
 import {toast} from "sonner";
 import {useState} from "react";
-import type {CategoryActionsCellProps} from "@widgets/categoryList";
+import type {CategoryActionsCellProps} from "./types";
 
 export function CategoryActionsCell({category, onEdit}: CategoryActionsCellProps) {
   const dispatch = useAppDispatch();

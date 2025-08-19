@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import type {ClientStore} from "@shared/types";
-import {fetchUserPlaceClients} from "@entities/client/model/clientThunk";
+import {fetchUserPlaceClients} from "./clientThunk";
 
 const initialState: ClientStore = {
   clientsList: [],
