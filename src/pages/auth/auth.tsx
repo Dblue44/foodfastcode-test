@@ -13,6 +13,14 @@ import {Toaster} from "@shared/ui/sonner";
 import {useNavigate} from "react-router-dom";
 import {fetchUserPlaces, setCurrentPlace} from "@entities/place";
 
+function normalizePhoneForApi(raw: string): string {
+  // Берем только цифры, оставляем последние 10
+  const digits = (raw || "").replace(/\D/g, "");
+  const core10 = digits.length > 10 ? digits.slice(-10) : digits;
+  // Всегда отправляем в формате +7XXXXXXXXXX (если core10 меньше 10 — отправим как есть, бэкенд сообщит об ошибке)
+  return `+7${core10}`;
+}
+
 export const AuthPage = () => {
   const [stage, setStage] = useState<"phone" | "otp">("phone")
   const [phone, setPhone] = useState<string>("")
@@ -39,8 +47,8 @@ export const AuthPage = () => {
   const handlePhoneSubmit = async (data: PhoneForm) => {
     setIsSubmitting(true)
     try {
-      data.phone = "+" + data.phone
-      const result = await dispatch(sendCode(data))
+      const normalized = normalizePhoneForApi(data.phone)
+      const result = await dispatch(sendCode({ phone: normalized } as PhoneForm))
       if (sendCode.rejected.match(result)) {
         toast.error("Ошибка при отправке телефона", {
           icon: <AlertCircleIcon />,

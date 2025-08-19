@@ -46,7 +46,7 @@ export const AppLayout: React.FC = () => {
       <div className={cn("w-full flex items-center justify-center", appWrapClasses)}>
         <AdminSidebar side="left" />
         <SidebarInset>
-          <div className="h-screen flex m-3">
+          <div className="h-full flex m-3">
             <Card className="w-full flex flex-col py-4">
               <Header name={user.currentPage}/>
               <div className="w-full flex items-center justify-center">

@@ -121,8 +121,20 @@ export function LoginForm({
                           maxLength={6}
                           {...field}
                           onChange={(val) => {
-                            field.onChange(val);
-                            if (val.length === 6) {
+                            const onlyDigits = (val || "").replace(/\D/g, "").slice(0, 6);
+                            field.onChange(onlyDigits);
+                            if (onlyDigits.length === 6) {
+                              (document.activeElement as HTMLElement)?.blur();
+                              otpForm.handleSubmit(onOtpSubmit)();
+                            }
+                          }}
+                          onPaste={(e) => {
+                            e.preventDefault();
+                            const raw = e.clipboardData.getData("text");
+                            const digitsAndDash = raw.replace(/[^\d-]/g, "");
+                            const onlyDigits = digitsAndDash.replace(/-/g, "").slice(0, 6);
+                            otpForm.setValue("code", onlyDigits, { shouldValidate: true, shouldDirty: true });
+                            if (onlyDigits.length === 6) {
                               (document.activeElement as HTMLElement)?.blur();
                               otpForm.handleSubmit(onOtpSubmit)();
                             }
