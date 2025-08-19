@@ -1,6 +1,6 @@
 import {createSlice, isPending, isRejected, type PayloadAction} from "@reduxjs/toolkit";
 import type {Crumb, UserStore} from "@shared/types";
-import {sendCode, checkCode, getUser} from "@entities/user";
+import {sendCode, checkCode, getUser} from "@entities/user/model/userThunk";
 
 const initialState: UserStore = {
   user: null,
@@ -8,6 +8,7 @@ const initialState: UserStore = {
   authClosed: false,
   error: null,
   crumbs: [{label:"Главная", to:null}],
+  showIntro: false,
 }
 
 const userSlice = createSlice({
@@ -26,6 +27,9 @@ const userSlice = createSlice({
     clearCrumbs: (state) => {
       state.crumbs = [];
     },
+    setShowIntro: (state, action: PayloadAction<boolean>) => {
+      state.showIntro = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -55,5 +59,5 @@ const userSlice = createSlice({
   }
 })
 
-export const {logout, setCrumbs, clearCrumbs} = userSlice.actions
+export const {logout, setCrumbs, clearCrumbs, setShowIntro} = userSlice.actions
 export default userSlice.reducer

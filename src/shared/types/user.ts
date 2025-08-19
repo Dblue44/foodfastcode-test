@@ -26,6 +26,7 @@ export const userStoreSchema = z.object({
   error: z.string().optional().nullable(),
   authClosed: z.boolean(),
   crumbs: z.array(crumbSchema).default([]),
+  showIntro: z.boolean(),
 })
 
 export type UserStore = z.infer<typeof userStoreSchema>

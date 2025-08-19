@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {fetchUserPlaceCategories} from "@entities/category";
+import {fetchUserPlaceCategories} from "@entities/category/model/categoryThunk";
 import type {CategoryStore} from "@shared/types";
 
 const initialState: CategoryStore = {

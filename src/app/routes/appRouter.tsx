@@ -5,16 +5,18 @@ import {
   Route,
   RouterProvider,
 } from 'react-router-dom'
+import { Suspense, lazy } from "react";
 import {Fallback} from "@shared/ui/fallback";
 import {AppLayout, AuthLayout} from "@app/layout";
-import {AuthPage} from "@pages/auth";
-import {HomePage} from "@pages/home";
 import {ProtectedRoute} from "@app/routes";
-import {PlacesPage, CreatePlacePage, EditPlacePage} from "@pages/places";
-import {NotFoundPage} from "@pages/notFound";
-import {Suspense} from "react";
-import {ClientsPage} from "@pages/clients";
 
+const AuthPage      = lazy(() => import("@pages/auth").then(m => ({ default: m.AuthPage })));
+const HomePage      = lazy(() => import("@pages/home").then(m => ({ default: m.HomePage })));
+const PlacesPage    = lazy(() => import("@pages/places").then(m => ({ default: m.PlacesPage })));
+const CreatePlacePage = lazy(() => import("@pages/places/createPlace").then(m => ({ default: m.CreatePlacePage })));
+const EditPlacePage   = lazy(() => import("@pages/places/editPlace").then(m => ({ default: m.EditPlacePage })));
+const ClientsPage   = lazy(() => import("@pages/clients").then(m => ({ default: m.ClientsPage })));
+const NotFoundPage  = lazy(() => import("@pages/notFound").then(m => ({ default: m.NotFoundPage })));
 export const AppRouter = () => {
 
   const routers = createRoutesFromElements(
@@ -22,12 +24,13 @@ export const AppRouter = () => {
       <Route
         path="/"
         element={<Navigate to="/auth" replace />}
+        errorElement={<Fallback />}
       />
-      <Route element={<AuthLayout />} >
+      <Route element={<AuthLayout />} errorElement={<Fallback />}>
         <Route path="/auth" element={<AuthPage />} />
       </Route>
-      <Route element={<ProtectedRoute />}>
-        <Route element={<AppLayout />}>
+      <Route element={<ProtectedRoute />} errorElement={<Fallback />}>
+        <Route element={<AppLayout />} errorElement={<Fallback />}>
           <Route path="/home" element={<HomePage />} />
           <Route path="/places" element={<PlacesPage />} />
           <Route path="/create-place" element={<CreatePlacePage />} />
@@ -43,7 +46,7 @@ export const AppRouter = () => {
   const router = createBrowserRouter(routers, {})
 
   return (
-    <Suspense fallback={<Fallback />}>
+    <Suspense>
       <RouterProvider router={router} />
     </Suspense>
   )

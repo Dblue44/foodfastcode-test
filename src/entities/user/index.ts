@@ -2,7 +2,8 @@ export {
   default as userReducer,
   logout,
   setCrumbs,
-  clearCrumbs
+  clearCrumbs,
+  setShowIntro
 } from './model/userSlice'
 export {sendCode, checkCode, getUser} from './model/userThunk'
-export {selectUserBase, selectCrumbs, selectAccessToken} from './model/selector'
+export {selectUserBase, selectCrumbs, selectAccessToken, selectShowInto} from './model/selector'

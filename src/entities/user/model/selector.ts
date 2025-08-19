@@ -15,3 +15,8 @@ export const selectAccessToken = createSelector(
   selectUserBase,
   (state: UserStore) => state.accessToken
 )
+
+export const selectShowInto = createSelector(
+  selectUserBase,
+  (state: UserStore) => state.showIntro
+)

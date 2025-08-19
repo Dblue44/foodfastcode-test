@@ -10,7 +10,8 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@shared/ui/tabs.tsx";
 import {usePageCrumbs} from "@/features";
 import {ProductTable} from "@widgets/productTable";
 import {
-  clearProducts, selectCategoryId,
+  clearProducts,
+  selectCategoryId,
   selectCategoryProductsList,
   setProductPlaceId
 } from "@entities/product";

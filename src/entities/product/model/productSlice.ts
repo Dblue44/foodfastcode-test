@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import type {ProductStore} from "@shared/types";
-import {fetchUserCategoryProducts} from "@entities/product";
+import {fetchUserCategoryProducts} from "@entities/product/model/productThunk";
 
 const initialState: ProductStore = {
   productsList: [],
