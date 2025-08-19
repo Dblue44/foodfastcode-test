@@ -22,7 +22,7 @@ const API_MAX_FILE_SIZE = CONFIG.API_MAX_FILE_SIZE
 
 const buildProductImageUrl = (imageId?: string) => {
   if (!imageId) return undefined;
-  return `${CONFIG.API_BASE_URL}uploads/${imageId}`;
+  return `${CONFIG.S3_BASE_URL}${imageId}`;
 };
 
 const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
