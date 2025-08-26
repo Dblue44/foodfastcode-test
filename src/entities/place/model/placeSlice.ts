@@ -1,5 +1,5 @@
-import {createSlice} from "@reduxjs/toolkit";
-import type {PlacesState} from "@shared/types";
+import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
+import type {Place, PlacesState} from "@shared/types";
 import {fetchUserPlaces} from "./placeThunk";
 
 const initialState: PlacesState = {
@@ -15,8 +15,11 @@ const placeSlice = createSlice({
     clearPlaces: (state) => {
       state.placesList = []
     },
-    setCurrentPlace: (state, action) => {
+    setCurrentPlace: (state, action: PayloadAction<Place>) => {
       state.selectedPlace = action.payload
+    },
+    removePlaceFromList: (state, action: PayloadAction<string>) => {
+      state.placesList = state.placesList.filter((place) => place.id !== action.payload)
     },
   },
   extraReducers: (builder) => {
@@ -36,5 +39,5 @@ const placeSlice = createSlice({
   }
 })
 
-export const {clearPlaces, setCurrentPlace} = placeSlice.actions
+export const {clearPlaces, setCurrentPlace, removePlaceFromList} = placeSlice.actions
 export default placeSlice.reducer

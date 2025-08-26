@@ -1,5 +1,5 @@
-import {createSlice} from "@reduxjs/toolkit";
-import type {ProductStore} from "@shared/types";
+import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
+import type {Product, ProductStore} from "@shared/types";
 import {fetchUserCategoryProducts} from "./productThunk";
 
 const initialState: ProductStore = {
@@ -14,7 +14,7 @@ const productSlice = createSlice({
   name: 'product',
   initialState,
   reducers: {
-    setCategoryId: (state, action) => {
+    setCategoryId: (state, action: PayloadAction<string>) => {
       if (state.selectedCategoryId === action.payload) return
       state.selectedCategoryId = action.payload
       state.categoryChanged = true
@@ -22,7 +22,7 @@ const productSlice = createSlice({
     resetCategoryChanged: (state) => {
       state.categoryChanged = false
     },
-    setProductPlaceId: (state, action) => {
+    setProductPlaceId: (state, action: PayloadAction<string>) => {
       state.selectedPlaceId = action.payload
     },
     clearProducts: (state) => {
@@ -34,13 +34,13 @@ const productSlice = createSlice({
     stopLoadingProducts: (state) => {
       state.loadingProducts = false
     },
-    removeProductFromList: (state, action) => {
+    removeProductFromList: (state, action: PayloadAction<string>) => {
       state.productsList = [...state.productsList.filter((p) => p.id !== action.payload)]
     },
-    extendProductList: (state, action) => {
+    extendProductList: (state, action: PayloadAction<Product>) => {
       state.productsList = [...state.productsList, action.payload]
     },
-    replaceProductInList: (state, action) => {
+    replaceProductInList: (state, action: PayloadAction<Product>) => {
       state.productsList = [...state.productsList.filter((p) => p.id !== action.payload.id), action.payload]
     },
   },

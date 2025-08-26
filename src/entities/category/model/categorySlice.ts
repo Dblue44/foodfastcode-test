@@ -1,6 +1,6 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
 import {fetchUserPlaceCategories} from "./categoryThunk";
-import type {CategoryStore} from "@shared/types";
+import type {Category, CategoryStore} from "@shared/types";
 
 const initialState: CategoryStore = {
   categoriesList: [],
@@ -12,7 +12,7 @@ const categorySlice = createSlice({
   name: 'category',
   initialState,
   reducers: {
-    setCategoryPlaceId: (state, action) => {
+    setCategoryPlaceId: (state, action: PayloadAction<string>) => {
       state.selectedPlaceId = action.payload
     },
     clearCategories: (state) => {
@@ -20,13 +20,13 @@ const categorySlice = createSlice({
       state.selectedPlaceId = ""
       state.loadingCategories = true
     },
-    extendCategoryList: (state, action) => {
+    extendCategoryList: (state, action: PayloadAction<Category>) => {
       state.categoriesList = [...state.categoriesList, action.payload]
     },
-    removeCategoryFromList: (state, action) => {
+    removeCategoryFromList: (state, action: PayloadAction<string>) => {
       state.categoriesList = [...state.categoriesList.filter((c) => c.id !== action.payload)]
     },
-    replaceCategoryInList: (state, action) => {
+    replaceCategoryInList: (state, action: PayloadAction<Category>) => {
       state.categoriesList = [...state.categoriesList.filter((c) => c.id !== action.payload.id), action.payload]
     },
   },
