@@ -55,6 +55,7 @@ export const productFormSchema = z.object({
   description: z.string().min(1, "Введите описание"),
   categoryId: z.string().min(1, "Выберите категорию"),
   image: z.string().min(1, "Выберите изображение"),
+  imageId: z.string(),
 })
 
 export type ProductFormType = z.infer<typeof productFormSchema>
