@@ -1,5 +1,5 @@
 import {createSlice, type PayloadAction} from "@reduxjs/toolkit";
-import type {Client, ClientStore, Place} from "@shared/types";
+import type {Client, ClientStore, BasePlace} from "@shared/types";
 import {fetchUserPlaceClients} from "./clientThunk";
 
 const initialState: ClientStore = {
@@ -16,7 +16,7 @@ const clientSlice = createSlice({
     clearClients: (state) => {
       state.clientsList = []
     },
-    setClientPlace: (state, action: PayloadAction<Place>) => {
+    setClientPlace: (state, action: PayloadAction<BasePlace>) => {
       state.selectedPlace = action.payload
     },
     setClient: (state, action: PayloadAction<Client>) => {

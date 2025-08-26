@@ -15,7 +15,7 @@ const placeSlice = createSlice({
     clearPlaces: (state) => {
       state.placesList = []
     },
-    setCurrentPlace: (state, action: PayloadAction<Place>) => {
+    setCurrentPlace: (state, action: PayloadAction<Place | undefined>) => {
       state.selectedPlace = action.payload
     },
     removePlaceFromList: (state, action: PayloadAction<string>) => {
