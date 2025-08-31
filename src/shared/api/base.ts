@@ -89,9 +89,9 @@ function applySsoResponseInterceptor(instance: AxiosInstance) {
         original!._retry = true
 
         refreshPromise = rawSso
-          .post<AxiosResponse<UserAccessCodeData>>("refresh-token", null, { withCredentials: true })
+          .post<UserAccessCodeData>("refresh-token", null, { withCredentials: true })
           .then((resp) => {
-            const newAccess = (resp?.data?.data?.data?.access_token ?? resp?.data?.data?.data?.access_token) as string | undefined // TODO ПЕДЕЛАТЬ ОТВЕТ С БЭКА
+            const newAccess = (resp?.data?.data?.access_token ?? resp?.data?.data?.access_token) as string | undefined
             if (!newAccess) throw new Error("No access token in refresh response")
             localStorage.setItem("access_token", newAccess)
             onTokenRefreshed(newAccess)
