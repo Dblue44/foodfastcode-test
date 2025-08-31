@@ -144,6 +144,7 @@ export function ProductTable({data, category, isProductsLoading}: ProductListPro
                       if (isInteractiveTarget(target)) return;
                       const id = row.original.id;
                       if (id) {
+                        setMode("edit")
                         setInitialProduct(row.original)
                         setOpen(true)
                       }

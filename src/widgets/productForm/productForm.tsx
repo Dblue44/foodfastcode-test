@@ -239,7 +239,7 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
                       let raw = e.target.value;
                       raw = raw.replace(/[^0-9.]/g, "");
                       raw = raw.replace(/^0+(\d)/, "$1");
-                      field.onChange(raw);
+                      field.onChange(Number(raw));
                     }}
                   />
                 </FormControl>
@@ -264,7 +264,7 @@ export function ProductForm({onSubmit, category, product, mode}: CreateProductFo
                       let raw = e.target.value;
                       raw = raw.replace(/[^0-9.]/g, "");
                       raw = raw.replace(/^0+(\d)/, "$1");
-                      field.onChange(raw);
+                      field.onChange(Number(raw));
                     }}
                   />
                 </FormControl>
