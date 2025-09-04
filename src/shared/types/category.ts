@@ -27,9 +27,3 @@ export type UpdateCategoryResponse = z.infer<typeof updateCategoryResponseSchema
 
 export const deleteCategoryResponseSchema = apiDataSchema(z.boolean())
 export type DeleteCategoryResponse = z.infer<typeof deleteCategoryResponseSchema>
-
-export const categoryFormTypeSchema = z.object({
-  name: z.string().min(1, "Введите название"),
-})
-
-export type CategoryFormType = z.infer<typeof categoryFormTypeSchema>

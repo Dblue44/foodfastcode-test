@@ -55,6 +55,18 @@ export function resolveCrumbs(
     ];
   }
 
+  // EDIT USER: /user/:id
+  const matchUser = pathname.match(/^\/user\/([^/]+)$/);
+  if (matchUser) {
+    const id = String(matchUser[1]);
+    const place = places.find((p) => String(p.id) === id);
+    const label = place?.name ?? pageName ?? "Заведение";
+    return [
+      { label: "Пользователи", to: "/clients" },
+      { label, to: null },
+    ];
+  }
+
 
   return [];
 }

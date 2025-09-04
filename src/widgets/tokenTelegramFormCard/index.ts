@@ -1,0 +1,1 @@
+export {TokenTelegramFormCard} from './tokenTelegramFormCard';

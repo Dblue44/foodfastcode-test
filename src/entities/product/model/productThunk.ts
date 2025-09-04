@@ -1,6 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import type {
-  ProductFormType,
   CreateProductResponse, DeleteProductResponse,
   ErrorLineType,
   FetchCategoryProductsResponse,
@@ -18,6 +17,7 @@ import {
 } from "@shared/api/product";
 import {selectCategoryId, selectProductPlaceId} from "./selector";
 import type {UpdateProductImageResponse} from "@shared/types/product.ts";
+import type {ProductFormType} from "@features/product/sharedTypes.ts";
 
 export const fetchUserCategoryProducts = createAsyncThunk<
   FetchCategoryProductsResponse,

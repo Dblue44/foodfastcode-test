@@ -1,6 +1,5 @@
 import {apiBaseInstance} from "@shared/api";
 import type {
-  ProductFormType,
   CreateProductResponse, DeleteProductResponse,
   FetchCategoryProductsResponse,
   FetchProductResponse,
@@ -8,6 +7,7 @@ import type {
   LoadImageResponse
 } from "@shared/types";
 import type {UpdateProductImageResponse} from "@shared/types/product.ts";
+import type {ProductFormType} from "@features/product/sharedTypes.ts";
 
 export const fetchCategoryProducts = (placeId: string, categoryId: string): Promise<FetchCategoryProductsResponse> => {
   return apiBaseInstance.get<FetchCategoryProductsResponse>(`/${placeId}/categories/${categoryId}/products`)

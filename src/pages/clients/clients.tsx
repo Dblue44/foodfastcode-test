@@ -1,7 +1,7 @@
 import {useAppSelector} from "@shared/lib";
 import {selectAllClients} from "@entities/client";
 import {ClientTable} from "@widgets/clientTable";
-import {usePageCrumbs} from "@/features";
+import {usePageCrumbs} from "@features/usePageCrumbs";
 
 export function ClientsPage() {
   usePageCrumbs("Клиенты");

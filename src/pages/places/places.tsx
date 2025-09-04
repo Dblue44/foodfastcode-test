@@ -1,8 +1,8 @@
-import {PlaceList, PlaceListSkeleton} from "widgets/placeList";
+import {PlaceList, PlaceListSkeleton} from "@features/place";
 import {useAppDispatch, useAppSelector} from "@shared/lib";
 import {fetchUserPlaces, clearPlaces, selectPlacesBase} from "@entities/place";
 import {useEffect} from "react";
-import { usePageCrumbs } from "@/features";
+import { usePageCrumbs } from "@features/usePageCrumbs";
 import type {PlacesState} from "@shared/types";
 import {Toaster} from "@shared/ui/sonner.tsx";
 

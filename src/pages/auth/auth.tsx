@@ -40,7 +40,7 @@ export const AuthPage = () => {
   })
 
   const inputPhoneRef = useMask({
-    mask: "+7 (___) ___-__-__",
+    mask: "+_ (___) ___-__-__",
     replacement: { _: /\d/ }
   })
 

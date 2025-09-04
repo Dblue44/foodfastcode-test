@@ -44,7 +44,7 @@ export const AppLayout: React.FC = () => {
       )}
 
       <div className={cn("w-full flex items-center justify-center", appWrapClasses)}>
-        <AdminSidebar side="left" />
+        <AdminSidebar collapsible="offcanvas" side="left" />
         <SidebarInset>
           <div className="min-h-screen flex m-3 overflow-y-auto">
             <Card className="w-full flex flex-col py-4">

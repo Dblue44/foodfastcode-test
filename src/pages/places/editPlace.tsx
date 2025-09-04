@@ -5,10 +5,10 @@ import {Card, CardHeader, CardTitle, CardFooter} from "@shared/ui/card";
 import {Button} from "@shared/ui/button";
 import {Toaster} from "@shared/ui/sonner.tsx";
 import {selectPlacesList} from "@entities/place";
-import {PlaceSettings} from "@widgets/placeSettings";
+import {PlaceSettings} from "@features/place";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@shared/ui/tabs.tsx";
-import {usePageCrumbs} from "@/features";
-import {ProductTable} from "@widgets/productTable";
+import {usePageCrumbs} from "@features/usePageCrumbs";
+import {ProductTable} from "@features/product";
 import {
   clearProducts,
   selectCategoryId,
@@ -22,9 +22,10 @@ import {
   selectPlaceCategoriesList,
   setCategoryPlaceId
 } from "@entities/category";
-import {CategoryList} from "@widgets/categoryList";
+import {CategoryList} from "@features/category";
 import {selectIsProductsLoading} from "@entities/product";
 import { useContainerWidth } from "@shared/hooks/use-container-width";
+import {MenuSettings} from "@features/menuSettings";
 
 
 export function EditPlacePage() {
@@ -73,14 +74,15 @@ export function EditPlacePage() {
   return (
     <div className="w-full max-w-[1440px] px-4">
       <Toaster position="top-center" richColors/>
-      <div className="flex items-start gap-2 mb-2">
-        <Button type="button" variant="outline" className="absolute" onClick={() => navigate(-1)}>
+      <div className="relative mb-2 flex flex-col gap-2 md:flex-row md:items-start">
+        <Button type="button" variant="outline" className="self-start absolute" onClick={() => navigate(-1)}>
           Назад
         </Button>
-        <Tabs defaultValue="main" className="flex-1">
-          <TabsList className="ml-20">
+        <Tabs defaultValue="main" className="flex-1 w-full">
+          <TabsList className="mt-12 md:mt-0 md:ml-24 flex flex-wrap">
             <TabsTrigger value="main">Основное</TabsTrigger>
             <TabsTrigger value="settings">Настройки</TabsTrigger>
+            <TabsTrigger value="menu-settings">Конструктор меню</TabsTrigger>
           </TabsList>
           <TabsContent value="main" ref={tabsContentRef}>
             <div className={cn(
@@ -93,6 +95,9 @@ export function EditPlacePage() {
           </TabsContent>
           <TabsContent value="settings">
             <PlaceSettings place={place}/>
+          </TabsContent>
+          <TabsContent value="menu-settings">
+            <MenuSettings place={place}/>
           </TabsContent>
         </Tabs>
       </div>

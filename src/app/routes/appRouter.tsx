@@ -17,6 +17,8 @@ const CreatePlacePage = lazy(() => import("@pages/places/createPlace").then(m =>
 const EditPlacePage   = lazy(() => import("@pages/places/editPlace").then(m => ({ default: m.EditPlacePage })));
 const ClientsPage   = lazy(() => import("@pages/clients").then(m => ({ default: m.ClientsPage })));
 const NotFoundPage  = lazy(() => import("@pages/notFound").then(m => ({ default: m.NotFoundPage })));
+const UserSettingsPage  = lazy(() => import("@pages/user").then(m => ({ default: m.UserSettingsPage })));
+const SettingsPage  = lazy(() => import("@pages/settings").then(m => ({ default: m.SettingsPage })));
 export const AppRouter = () => {
 
   const routers = createRoutesFromElements(
@@ -36,6 +38,8 @@ export const AppRouter = () => {
           <Route path="/create-place" element={<CreatePlacePage />} />
           <Route path='/place/:id' element={<EditPlacePage />} />
           <Route path='/clients' element={<ClientsPage />} />
+          <Route path='/user/:id' element={<UserSettingsPage />} />
+          <Route path='/settings' element={<SettingsPage />} />
         </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />

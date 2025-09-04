@@ -1,4 +1,4 @@
-import { usePageCrumbs } from "@/features";
+import { usePageCrumbs } from "@features/usePageCrumbs";
 import {useAppDispatch} from "@shared/lib";
 import {useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";

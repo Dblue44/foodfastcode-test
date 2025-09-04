@@ -1,4 +1,4 @@
-import { usePageCrumbs } from "@/features";
+import { usePageCrumbs } from "@features/usePageCrumbs";
 
 export const HomePage = () => {
   usePageCrumbs("Дашборды");

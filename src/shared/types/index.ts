@@ -60,7 +60,6 @@ export type {
   UpdateCategoryResponse,
   DeleteCategoryResponse,
   CategoryStore,
-  CategoryFormType
 } from './category'
 export {
   categorySchema,
@@ -69,7 +68,6 @@ export {
   updateCategoryResponseSchema,
   deleteCategoryResponseSchema,
   categoryStoreSchema,
-  categoryFormTypeSchema
 } from './category'
 
 export type {
@@ -80,7 +78,6 @@ export type {
   UpdateProductResponse,
   DeleteProductResponse,
   ProductStore,
-  ProductFormType
 } from './product'
 export {
   productSchema,
@@ -90,7 +87,6 @@ export {
   updateProductResponseSchema,
   deleteProductResponseSchema,
   productStoreSchema,
-  productFormSchema
 } from './product'
 export type {
   Client,

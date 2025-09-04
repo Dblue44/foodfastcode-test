@@ -14,6 +14,7 @@ import {logout, selectUserBase} from "@entities/user";
 import type {UserStore} from "@shared/types";
 import {useAppDispatch, useAppSelector} from "@shared/lib";
 import {Skeleton} from "@shared/ui/skeleton.tsx";
+import {useNavigate} from "react-router-dom";
 
 export function NavUser({
   ...props
@@ -21,6 +22,7 @@ export function NavUser({
   const store: UserStore = useAppSelector(selectUserBase)
   const user = store.user
   const dispatch = useAppDispatch()
+  const navigate = useNavigate();
   const { isMobile } = useSidebar()
 
   return (
@@ -64,7 +66,7 @@ export function NavUser({
               </DropdownMenuLabel>
               <DropdownMenuSeparator/>
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => navigate(`/settings`)}>
                   <UserPen className="mr-2"/> Настройки
                 </DropdownMenuItem>
               </DropdownMenuGroup>
