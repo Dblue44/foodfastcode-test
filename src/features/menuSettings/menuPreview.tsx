@@ -7,23 +7,23 @@ import type {Variants} from "motion";
 import {AutoHeightSection} from "./components/autoHeightSection.tsx";
 
 const catContainer: Variants = {
-  hidden: { opacity: 0, x: -24 },
+  hidden: { opacity: 0, x: -10 },
   show: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.25, ease: "easeInOut", delayChildren: 0.06, when: "beforeChildren" },
+    transition: { duration: 0.15, ease: "easeInOut", delayChildren: 0.06, when: "beforeChildren" },
   },
-  exit: { opacity: 0, x: -24, transition: { duration: 0.2 } },
+  exit: { opacity: 0, x: -10, transition: { duration: 0.1 } },
 };
 const catItem: Variants = {
-  hidden: { opacity: 0, x: -10 },
-  show: { opacity: 1, x: 0, transition: { duration: 0.18 } },
+  hidden: { opacity: 0, x: -20 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.3 } },
 };
 
 const prodContainer: Variants  = {
-  hidden: { opacity: 0, y: 8, scale: 0.98 },
-  show:   { opacity: 1, y: 0, scale: 1, transition: { duration: 0.25, ease: "easeOut"} },
-  exit:   { opacity: 0, y: 8, scale: 0.98, transition: { duration: 0.2 } },
+  hidden: { opacity: 0, y: 8, scale: 0.9 },
+  show:   { opacity: 1, y: 0, scale: 1, transition: { duration: 0.2, ease: "easeOut"} },
+  exit:   { opacity: 0, y: 8, scale: 0.9, transition: { duration: 0.15 } },
 };
 const prodItem: Variants  = {
   hidden: { opacity: 0, y: 8 },
@@ -49,7 +49,7 @@ export function MenuPreview(rawProps: MenuPreviewProps) {
       </CardHeader>
 
       <CardContent>
-        <AnimatePresence initial={false} mode="wait">
+        <AnimatePresence initial={false} mode="popLayout">
           {showCategories ? (
             <AutoHeightSection key={`cat-${categoryView}`}>
               <motion.div
@@ -93,7 +93,7 @@ export function MenuPreview(rawProps: MenuPreviewProps) {
         </AnimatePresence>
 
         {/* Карточки товаров: кросс-фейд/слайд между представлениями + стаггер элементов */}
-        <AnimatePresence initial={false} mode="wait">
+        <AnimatePresence initial={false} mode="popLayout">
           <motion.div
             key={`prod-${catalogView}`}
             variants={prodContainer}

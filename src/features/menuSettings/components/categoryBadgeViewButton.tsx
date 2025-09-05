@@ -1,7 +1,6 @@
 import {type ViewButtonBaseProps, ViewButtonBasePropsSchema} from "@features/menuSettings/types.ts";
 import {Button} from "@shared/ui/button.tsx";
 import {cn} from "@shared/lib";
-import { motion } from "motion/react";
 
 export function CategoryBadgeViewButton(props: ViewButtonBaseProps) {
   ViewButtonBasePropsSchema.parse(props);
@@ -25,66 +24,9 @@ export function CategoryBadgeViewButton(props: ViewButtonBaseProps) {
       )}
     >
       <div className="flex flex-wrap gap-2 justify-between">
-        <motion.span
-          className={cn(baseClassName, spanClassName)}
-          initial={false}
-          animate={selected ? {
-            y: 36,
-            transition: {
-              duration: 0.4,
-              ease: "easeInOut",
-              delay: 0.2,
-            }
-          } : {
-            y: 0,
-            transition: {
-              duration: 0.4,
-              ease: "easeInOut",
-              delay: 0.3,
-            }
-          }}
-        />
-
-        <motion.span
-          className={cn(baseClassName, spanClassName)}
-          initial={false}
-          animate={selected ? {
-            x: -63,
-            transition: {
-              duration: 0.4,
-              ease: "easeInOut",
-              delay: 0.35,
-            }
-          } : {
-            x: 0,
-            transition: {
-              duration: 0.4,
-              ease: "easeInOut",
-              delay: 0.2,
-            }
-          }}
-        />
-
-        <motion.span
-          className={cn(baseClassName, spanClassName)}
-          initial={false}
-          animate={selected ? {
-            x: [0, 63, 63], // сначала вправо, потом остается
-            y: [0, 0, -36],
-            transition: {
-              duration: 0.75,
-              ease: "easeInOut",
-              delay: 0.1,
-            }
-          } : {
-            x: [63, 63, 0], // сначала вправо, потом остается
-            y: [-36, 0, 0],
-            transition: {
-              duration: 0.75,
-              ease: "easeInOut",
-            }
-          }}
-        />
+        <span className={cn(baseClassName, spanClassName)}/>
+        <span className={cn(baseClassName, spanClassName)}/>
+        <span className={cn(baseClassName, spanClassName)}/>
       </div>
     </Button>
   );

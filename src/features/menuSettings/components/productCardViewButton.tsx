@@ -6,6 +6,22 @@ export function ProductCardViewButton(props: ViewButtonBaseProps) {
   ViewButtonBasePropsSchema.parse(props);
   const { selected, onSelect, className } = props;
 
+  const spanClassName = selected
+    ? "bg-primary-foreground/30 border-primary/20 shadow-black/20"
+    : "bg-primary/30 border-border";
+
+  const imageClassName = selected
+    ? "bg-primary-foreground border-primary/20 shadow-black/20"
+    : "bg-primary border-border";
+
+  const mainTextClassName = selected
+    ? "bg-primary-foreground/70 border-primary/20 shadow-black/20"
+    : "bg-primary/70 border-border";
+
+  const textClassName = selected
+    ? "bg-primary-foreground/30 border-primary/20 shadow-black/20"
+    : "bg-primary/30 border-border";
+
   return (
     <Button
       type="button"
@@ -19,11 +35,11 @@ export function ProductCardViewButton(props: ViewButtonBaseProps) {
     >
       <div className="grid grid-cols-2 gap-2 w-full">
         {[0, 1].map((i) => (
-          <div key={i} className="rounded-md bg-muted/40 p-1 pb-2 border border-border">
-            <div className="h-8 rounded bg-muted border border-border" />
+          <div key={i} className={cn("rounded-md p-1 pb-2 border border-border shadow-md shadow-primary/10", spanClassName)}>
+            <div className={cn("h-8 rounded border border-border shadow-md shadow-primary/10", imageClassName)} />
             <div className="mt-1 space-y-1">
-              <div className="h-1 w-7 rounded bg-muted border border-border" />
-              <div className="h-1 w-10 rounded bg-muted/80 border border-border" />
+              <div className={cn("h-1 w-7 rounded border border-border", mainTextClassName)} />
+              <div className={cn("h-1 w-10 rounded border border-border", textClassName)} />
             </div>
           </div>
         ))}

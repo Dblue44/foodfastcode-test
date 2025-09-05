@@ -6,6 +6,22 @@ export function ProductListViewButton(props: ViewButtonBaseProps) {
   ViewButtonBasePropsSchema.parse(props);
   const { selected, onSelect, className } = props;
 
+  const spanClassName = selected
+    ? "bg-primary-foreground/30 border-primary/20 shadow-black/20"
+    : "bg-primary/30 border-border";
+
+  const imageClassName = selected
+    ? "bg-primary-foreground border-primary/20 shadow-black/20"
+    : "bg-primary border-border";
+
+  const mainTextClassName = selected
+    ? "bg-primary-foreground/70 border-primary/20 shadow-black/20"
+    : "bg-primary/70 border-border";
+  
+  const textClassName = selected
+    ? "bg-primary-foreground/30 border-primary/20 shadow-black/20"
+    : "bg-primary/30 border-border";
+
   return (
     <Button
       type="button"
@@ -19,11 +35,11 @@ export function ProductListViewButton(props: ViewButtonBaseProps) {
     >
       <div className="flex flex-col gap-2 w-full">
         {[0, 1].map((i) => (
-          <div key={i} className="flex items-center bg-muted/40 p-1 rounded-md gap-1 border border-border">
-            <div className="h-5 w-5 rounded bg-muted border border-border" />
+          <div key={i} className={cn("flex items-center p-1 rounded-md gap-1 border border-border shadow-md shadow-primary/10", spanClassName)}>
+            <div className={cn("h-5 w-5 bg-primary rounded border border-border shadow-md shadow-primary/10", imageClassName)} />
             <div className="flex-1">
-              <div className="h-2 w-20 rounded bg-muted border border-border" />
-              <div className="mt-1 h-2 w-12 rounded bg-muted/80 border border-border" />
+              <div className={cn("h-2 w-20 bg-primary/80 rounded border border-border", mainTextClassName)} />
+              <div className={cn("mt-1 h-2 w-12 rounded border border-border", textClassName)} />
             </div>
           </div>
         ))}
