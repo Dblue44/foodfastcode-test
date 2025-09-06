@@ -10,7 +10,7 @@ export function CategoryBadgeViewButton(props: ViewButtonBaseProps) {
     ? "bg-primary-foreground border-primary/20 shadow-black/30"
     : "bg-primary border-border";
 
-  const baseClassName = "h-7 w-13 rounded-xl border shadow-md shadow-primary/20"
+  const baseClassName = "h-7 w-12 rounded-xl border shadow-md shadow-primary/20"
 
   return (
     <Button
@@ -18,7 +18,7 @@ export function CategoryBadgeViewButton(props: ViewButtonBaseProps) {
       onClick={onSelect}
       variant={selected ? "default" : "outline"}
       className={cn(
-        "h-22 w-36 rounded-xl border p-3.5", // базовые стили
+        "h-22 w-34 rounded-xl border p-3.5", // базовые стили
         selected ? "border-transparent" : "border-border", // фиксируем толщину границы
         className
       )}

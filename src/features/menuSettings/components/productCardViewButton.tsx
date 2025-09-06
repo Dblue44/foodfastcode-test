@@ -28,7 +28,7 @@ export function ProductCardViewButton(props: ViewButtonBaseProps) {
       onClick={onSelect}
       variant={selected ? "default" : "outline"}
       className={cn(
-        "h-22 w-36 rounded-2xl border p-3",
+        "h-22 w-34 rounded-2xl border p-3",
         selected ? "border-transparent" : "border-border",
         className
       )}
